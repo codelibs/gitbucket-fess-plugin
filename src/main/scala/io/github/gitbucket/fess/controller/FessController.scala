@@ -53,7 +53,7 @@ trait FessControllerBase extends ControllerBase {
     val num:Int = params.getOrElse("num", "20").toIntOpt.getOrElse(20)
     val offset:Int = params.getOrElse("offset", "0").toIntOpt.getOrElse(0)
     val allRepos = getVisibleRepositories(context.loginAccount)
-    val repos = allRepos.drop(offset).take(num).map{
+    val repos = allRepos.slice(offset, offset + num).map{
       r => ApiRepository(r, getAccountByUserName(r.owner).get)
     }
     val response:Map[String, Any] = Map(
