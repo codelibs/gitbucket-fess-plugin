@@ -1,5 +1,5 @@
+import io.github.gitbucket.fess.controller.FessController
 import io.github.gitbucket.solidbase.model.Version
-import io.github.gitbucket.sample.controller.HelloWorldController
 
 class Plugin extends gitbucket.core.plugin.Plugin {
   override val pluginId: String = "fess"
@@ -8,6 +8,6 @@ class Plugin extends gitbucket.core.plugin.Plugin {
   override val versions: List[Version] = List(new Version("1.0.0"))
 
   override val controllers = Seq(
-    "/helloworld" -> new HelloWorldController()
+    "/fess/*" -> new FessController()
   )
 }
