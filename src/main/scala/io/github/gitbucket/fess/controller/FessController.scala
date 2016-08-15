@@ -52,16 +52,15 @@ trait FessControllerBase extends ControllerBase {
   get("/fess/repos")(usersOnly{
     val num:Int = params.getOrElse("num", "20").toIntOpt.getOrElse(20)
     val offset:Int = params.getOrElse("offset", "0").toIntOpt.getOrElse(0)
-    val repos = getVisibleRepositories(context.loginAccount)
-    val total = repos.size
+    val allRepos = getVisibleRepositories(context.loginAccount)
+    val repos = allRepos.drop(offset).take(num).map{
+      r => ApiRepository(r, getAccountByUserName(r.owner).get)
+    }
     val response:Map[String, Any] = Map(
-      "total_count" -> total,
-      "response_count" -> (num min total),
+      "total_count" -> allRepos.size,
+      "response_count" -> repos.size,
       "offset" -> offset,
-      "repositories" ->
-        repos.drop(offset).take(num).map{
-          r => ApiRepository(r, getAccountByUserName(r.owner).get)
-        }
+      "repositories" -> repos
     )
     JsonFormat(response)
   })
