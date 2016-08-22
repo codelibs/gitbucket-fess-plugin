@@ -49,7 +49,7 @@ trait FessControllerBase extends ControllerBase {
     with ReadableUsersAuthenticator
     with CollaboratorsAuthenticator =>
 
-  get("/fess/repos")(usersOnly{
+  get("/api/v3/fess/repos")(usersOnly{
     val num:Int = params.getOrElse("num", "20").toIntOpt.getOrElse(20)
     val offset:Int = params.getOrElse("offset", "0").toIntOpt.getOrElse(0)
     val allRepos = getVisibleRepositories(context.loginAccount)
@@ -58,16 +58,16 @@ trait FessControllerBase extends ControllerBase {
         ApiRepository(r, getAccountByUserName(r.owner).get),
         getCollaborators(r.owner, r.name))
     }
-    val response:Map[String, Any] = Map(
-      "total_count" -> allRepos.size,
-      "response_count" -> repos.size,
-      "offset" -> offset,
-      "repositories" -> repos
-    )
-    JsonFormat(response)
+    JsonFormat(FessResponse(allRepos.size, repos.size, offset, repos))
   })
 }
 
 case class FessRepositoryInfo(
   repository: ApiRepository,
   collaborators: List[String])
+
+case class FessResponse(
+  total_count: Int,
+  response_count: Int,
+  offset: Int,
+  repositories: List[FessRepositoryInfo])
