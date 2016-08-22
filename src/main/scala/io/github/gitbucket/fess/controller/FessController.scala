@@ -1,7 +1,9 @@
 package io.github.gitbucket.fess.controller
 
-import gitbucket.core.api.{ApiRepository, JsonFormat}
+import gitbucket.core.api._
+import gitbucket.core.controller._
 import gitbucket.core.service._
+import gitbucket.core.util.JGitUtil.{getFileList}
 import gitbucket.core.util._
 import gitbucket.core.util.Implicits._
 import gitbucket.core.controller.ControllerBase
@@ -49,7 +51,17 @@ trait FessControllerBase extends ControllerBase {
     with ReadableUsersAuthenticator
     with CollaboratorsAuthenticator =>
 
-  get("/api/v3/fess/repos")(usersOnly{
+  override def NotFound() = {
+    contentType = formats("json")
+    org.scalatra.NotFound(ApiError("Not Found"))
+  }
+
+  override def Unauthorized()(implicit context: Context) = {
+    contentType = formats("json")
+    org.scalatra.Unauthorized(ApiError("Requires authentication"))
+  }
+
+  get("/fess/repos")(usersOnly{
     val num:Int = params.getOrElse("num", "20").toIntOpt.getOrElse(20)
     val offset:Int = params.getOrElse("offset", "0").toIntOpt.getOrElse(0)
     val allRepos = getVisibleRepositories(context.loginAccount)
