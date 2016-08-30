@@ -1,7 +1,6 @@
 package io.github.gitbucket.fess.controller
 
 import gitbucket.core.api._
-import gitbucket.core.controller._
 import gitbucket.core.service._
 import gitbucket.core.util.JGitUtil.{getFileList}
 import gitbucket.core.util._
@@ -63,6 +62,15 @@ trait FessControllerBase extends ControllerBase {
         getCollaborators(r.owner, r.name))
     }
     JsonFormat(FessResponse(allRepos.size, repos.size, offset, repos))
+  })
+
+  get("/api/v3/fess/repos/:owner/:repository/issues/:id")(referrersOnly { repository =>
+    (for{
+      issueId <- params("id").toIntOpt
+      issue <- getIssue(repository.owner, repository.name, issueId.toString)
+    } yield {
+      JsonFormat(ApiIssue(issue, RepositoryName(repository), ApiUser(getAccountByUserName(repository.owner).get)))
+    }) getOrElse NotFound
   })
 }
 
