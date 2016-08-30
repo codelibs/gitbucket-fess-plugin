@@ -51,17 +51,8 @@ trait FessControllerBase extends ControllerBase {
     with ReadableUsersAuthenticator
     with CollaboratorsAuthenticator =>
 
-  override def NotFound() = {
-    contentType = formats("json")
-    org.scalatra.NotFound(ApiError("Not Found"))
-  }
-
-  override def Unauthorized()(implicit context: Context) = {
-    contentType = formats("json")
-    org.scalatra.Unauthorized(ApiError("Requires authentication"))
-  }
-
-  get("/fess/repos")(usersOnly{
+  get("/api/v3/fess/repos")(usersOnly{
+    contentType = "application/json"
     val num:Int = params.getOrElse("num", "20").toIntOpt.getOrElse(20)
     val offset:Int = params.getOrElse("offset", "0").toIntOpt.getOrElse(0)
     val allRepos = getVisibleRepositories(context.loginAccount)

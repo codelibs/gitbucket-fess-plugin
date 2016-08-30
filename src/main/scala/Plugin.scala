@@ -8,6 +8,8 @@ class Plugin extends gitbucket.core.plugin.Plugin {
   override val versions: List[Version] = List(new Version("1.0.0"))
 
   override val controllers = Seq(
-    "/fess/*" -> new FessController()
+    // FIXME: path should not start with "/api/v3/"
+    // "/api/v3/*" is treated as a special path in ControllerBase
+    "/api/v3/fess/*" -> new FessController()
   )
 }
