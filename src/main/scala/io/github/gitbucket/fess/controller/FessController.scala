@@ -59,6 +59,7 @@ trait FessControllerBase extends ControllerBase {
     val repos = allRepos.slice(offset, offset + num).map{
       r => FessRepositoryInfo(
         ApiRepository(r, getAccountByUserName(r.owner).get),
+        r.issueCount,
         getCollaborators(r.owner, r.name))
     }
     JsonFormat(FessResponse(allRepos.size, repos.size, offset, repos))
@@ -67,6 +68,7 @@ trait FessControllerBase extends ControllerBase {
 
 case class FessRepositoryInfo(
   repository: ApiRepository,
+  issue_count: Int,
   collaborators: List[String])
 
 case class FessResponse(
