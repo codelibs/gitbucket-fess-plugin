@@ -6,8 +6,11 @@ version := "1.0.0-SNAPSHOT"
 
 scalaVersion := "2.11.8"
 
+lazy val root = (project in file(".")).enablePlugins(SbtTwirl)
+
 libraryDependencies ++= Seq(
   "io.github.gitbucket" %% "gitbucket"         % "4.3.0" % "provided",
+  "com.typesafe.play"   %% "twirl-compiler"    % "1.0.4" % "provided",
   "javax.servlet"        % "javax.servlet-api" % "3.1.0" % "provided"
 )
 

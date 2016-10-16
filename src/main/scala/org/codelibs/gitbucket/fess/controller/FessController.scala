@@ -7,7 +7,8 @@ import gitbucket.core.util.JGitUtil.{getFileList}
 import gitbucket.core.util._
 import gitbucket.core.util.Implicits._
 import gitbucket.core.controller.ControllerBase
-import io.github.gitbucket.fess.html._
+import org.codelibs.gitbucket.fess.html
+import play.twirl.api.Html
 
 /**
   * Created by Keiichi Watanabe
@@ -63,6 +64,10 @@ trait FessControllerBase extends ControllerBase {
         r.issueCount, getCollaborators(r.owner, r.name))
     }
     JsonFormat(FessResponse(allRepos.size, repos.size, offset, repos))
+  })
+
+  get("/fess")(usersOnly{
+    html.fess("Fess")
   })
 }
 
