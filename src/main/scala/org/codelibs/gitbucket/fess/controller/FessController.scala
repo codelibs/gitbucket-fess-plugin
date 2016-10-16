@@ -1,4 +1,4 @@
-package io.github.gitbucket.fess.controller
+package org.codelibs.gitbucket.fess.controller
 
 import gitbucket.core.api._
 import gitbucket.core.controller._
@@ -7,6 +7,7 @@ import gitbucket.core.util.JGitUtil.{getFileList}
 import gitbucket.core.util._
 import gitbucket.core.util.Implicits._
 import gitbucket.core.controller.ControllerBase
+import io.github.gitbucket.fess.html._
 
 /**
   * Created by Keiichi Watanabe

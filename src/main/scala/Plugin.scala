@@ -1,4 +1,4 @@
-import io.github.gitbucket.fess.controller.FessController
+import org.codelibs.gitbucket.fess.controller.FessController
 import io.github.gitbucket.solidbase.model.Version
 
 class Plugin extends gitbucket.core.plugin.Plugin {
