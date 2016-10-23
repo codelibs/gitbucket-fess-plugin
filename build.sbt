@@ -11,6 +11,7 @@ lazy val root = (project in file(".")).enablePlugins(SbtTwirl)
 libraryDependencies ++= Seq(
   "io.github.gitbucket" %% "gitbucket"         % "4.3.0" % "provided",
   "com.typesafe.play"   %% "twirl-compiler"    % "1.0.4" % "provided",
+  "org.json4s"          %% "json4s-jackson"    % "3.3.0",
   "javax.servlet"        % "javax.servlet-api" % "3.1.0" % "provided"
 )
 

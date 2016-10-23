@@ -1,20 +1,13 @@
 package org.codelibs.gitbucket.fess.controller
 
 import gitbucket.core.api._
-import gitbucket.core.controller._
 import gitbucket.core.service._
-import gitbucket.core.util.JGitUtil.{getFileList}
 import gitbucket.core.util._
-import gitbucket.core.util.Implicits._
 import gitbucket.core.controller.ControllerBase
-import org.codelibs.gitbucket.fess.html
-import play.twirl.api.Html
+import gitbucket.core.util.Implicits._
+import org.codelibs.gitbucket.fess.service.FessSearchService
 
-/**
-  * Created by Keiichi Watanabe
-  */
-
-class FessController extends FessControllerBase
+class FessApiApiController extends FessApiControllerBase
   with RepositoryService
   with AccountService
   with ProtectedBranchService
@@ -35,8 +28,9 @@ class FessController extends FessControllerBase
   with ReferrerAuthenticator
   with ReadableUsersAuthenticator
   with CollaboratorsAuthenticator
+  with FessSearchService
 
-trait FessControllerBase extends ControllerBase {
+trait FessApiControllerBase extends ControllerBase {
   self: RepositoryService
     with AccountService
     with ProtectedBranchService
@@ -51,7 +45,9 @@ trait FessControllerBase extends ControllerBase {
     with GroupManagerAuthenticator
     with ReferrerAuthenticator
     with ReadableUsersAuthenticator
-    with CollaboratorsAuthenticator =>
+    with CollaboratorsAuthenticator
+    with FessSearchService
+    =>
 
   get("/api/v3/fess/repos")(usersOnly{
     contentType = "application/json"
@@ -65,10 +61,6 @@ trait FessControllerBase extends ControllerBase {
     }
     JsonFormat(FessResponse(allRepos.size, repos.size, offset, repos))
   })
-
-  get("/fess")(usersOnly{
-    html.fess("Fess")
-  })
 }
 
 case class FessRepositoryInfo(name: String,
@@ -81,3 +73,4 @@ case class FessResponse(total_count: Int,
                         response_count: Int,
                         offset: Int,
                         repositories: List[FessRepositoryInfo])
+

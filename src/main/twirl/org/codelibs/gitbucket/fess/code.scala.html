@@ -1,0 +1,29 @@
+@import org.codelibs.gitbucket.fess.service.FessSearchResult
+@(result: FessSearchResult, page: Int)(implicit context: gitbucket.core.controller.Context)
+@import gitbucket.core.view.helpers
+@import gitbucket.core.service.RepositorySearchService
+@gitbucket.core.html.main("Search Results", None){
+    @org.codelibs.gitbucket.fess.html.menu("code", result.hit_count, 0, 0, result.query, List(), List()){
+        @if(result.query.isEmpty){
+            <h4>Search GitBucket by Fess</h4>
+        } else { @if(result.file_list.isEmpty){
+            <h4>We couldn't find any code matching '@result.query'</h4>
+        } else {
+            <h4>We've found @result.hit_count code @helpers.plural(result.hit_count, "result")</h4>
+        }  }
+        @result.file_list.map { file =>
+            <div>
+                <h5>
+                    <a href=@{s"${context.path}/${file.owner}/${file.repo}"}>@file.owner/@file.repo</a>
+                     &#8211;
+                    <a href="@file.url">@file.title</a>
+                </h5>
+                @*<div class="small muted">Last committed @gitbucket.core.helper.html.datetimeago(file.lastModified)</div>*@
+                @*<pre class="prettyprint linenums:@file.highlightLineNumber" style="padding-left: 25px;">@Html(file.highlightText)</pre>*@
+                <pre class="prettyprint" style="padding-left: 25px;">@Html(file.digest)</pre>
+            </div>
+        }
+        @gitbucket.core.helper.html.paginator(page, result.hit_count, RepositorySearchService.CodeLimit, 10,
+            s"${context.path}/fess?q=${helpers.urlEncode(result.query)}&type=code")
+    }
+}
