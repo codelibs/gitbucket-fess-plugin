@@ -2,10 +2,11 @@ package org.codelibs.gitbucket.fess.controller
 
 import gitbucket.core.controller.ControllerBase
 import gitbucket.core.service.{AccountService, RepositoryService}
-import gitbucket.core.util._
+import org.codelibs.gitbucket.fess.service.{FessSearchService, FessSettingService}
+import org.codelibs.gitbucket.fess.html
 import gitbucket.core.util.ControlUtil._
-import org.codelibs.gitbucket.fess.service.FessSearchService
-
+import gitbucket.core.util._
+import gitbucket.core.util.Implicits._
 
 class FessSearchController extends FessSearchControllerBase
   with RepositoryService
@@ -17,8 +18,9 @@ class FessSearchController extends FessSearchControllerBase
   with ReadableUsersAuthenticator
   with CollaboratorsAuthenticator
   with FessSearchService
+  with FessSettingService
 
-class FessSearchControllerBase extends ControllerBase {
+trait FessSearchControllerBase extends ControllerBase {
   self: RepositoryService
     with AccountService
     with OwnerAuthenticator
@@ -27,7 +29,8 @@ class FessSearchControllerBase extends ControllerBase {
     with ReferrerAuthenticator
     with ReadableUsersAuthenticator
     with CollaboratorsAuthenticator
-    with FessSearchService =>
+    with FessSearchService
+    with FessSettingService =>
 
   get("/fess")(usersOnly{
     defining(params("q").trim, params.getOrElse("type", "code")){ case (query, target) =>
@@ -42,8 +45,29 @@ class FessSearchControllerBase extends ControllerBase {
 
       target.toLowerCase match {
         // case "issue" | "wiki" => // TODO
-        case _ => org.codelibs.gitbucket.fess.html.code(searchFiles(query, offset, Display_num), page)
+        case _ => html.code(searchFiles(query, offset, Display_num), page)
       }
     }
   })
+
+  get("/fess/settings")(usersOnly{
+    val (url, token) = ("", "")
+    /* FIXME: cause Table Not Found
+    val (url, token): (String, String) =
+      context.loginAccount.flatMap(user => {
+        getFessSettingByUserName(user.userName)
+      }).map(fessSetting => {
+        (fessSetting.fessUrl, fessSetting.fessToken.getOrElse(""))
+      }).getOrElse(("", ""))
+    */
+    html.settings(url, token)
+  })
+
+  /*
+  post("/fess/settings", settingForm)(usersOnly{
+    // TODO: save url and token
+  })
+  */
 }
+case class SettingForm(url:   String,
+                       token: Option[String])

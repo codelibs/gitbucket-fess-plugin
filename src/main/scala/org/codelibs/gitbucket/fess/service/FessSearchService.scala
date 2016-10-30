@@ -15,7 +15,7 @@ trait FessSearchService {
 
   def searchFiles(query: String, offset: Int, num: Int): FessSearchResult = {
     implicit val formats = DefaultFormats
-    val conn = new URL(s"http://localhost:8080/json/?q=$query&start=$offset&num=$num").openConnection // TODO prefix_query
+    val conn = new URL(s"http://localhost:8080/json/?q=$query&start=$offset&num=$num").openConnection // TODO use saved URL and Token
     val response = fromInputStream(conn.getInputStream).mkString
     val fessJsonResponse = (parse(response) \ "response").extract[FessRawResponse]
 
@@ -40,9 +40,7 @@ trait FessSearchService {
     val Pattern(owner, repo, revStr, path) = url
     (owner, repo, revStr, path)
   }
-
 }
-
 
 
 case class FessSearchResult(query: String,

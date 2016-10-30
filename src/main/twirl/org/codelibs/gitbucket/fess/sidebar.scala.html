@@ -1,0 +1,18 @@
+@(active: String)(body: Html)(implicit context: gitbucket.core.controller.Context)
+<div class="main-sidebar">
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li @if(active == "search"){class="active"}>
+                <a href="@context.path/fess?q=">
+                    <i class="menu-icon octicon octicon-search"></i> Search
+                </a>
+            </li>
+            <li @if(active == "settings"){class="active"}>
+                <a href="@context.path/fess/settings">
+                    <i class="menu-icon octicon octicon-tools"></i> Settings
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+@body
