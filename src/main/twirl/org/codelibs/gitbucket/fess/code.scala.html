@@ -5,7 +5,7 @@
 @gitbucket.core.html.main("Search Results", None){
     @org.codelibs.gitbucket.fess.html.menu("code", result.hit_count, 0, 0, result.query, List(), List()){
         @if(result.query.isEmpty){
-            <h4>Search GitBucket by Fess</h4>
+            
         } else { @if(result.file_list.isEmpty){
             <h4>We couldn't find any code matching '@result.query'</h4>
         } else {
@@ -22,6 +22,10 @@
                 <pre class="prettyprint linenums:@file.highlight_line_number" style="padding-left: 25px;">@Html(file.digest)</pre>
             </div>
         }
+        <hr>
+        <div align="right">
+            <h6>Powered by <a href="http://fess.codelibs.org/"><img src="@context.path/plugin-assets/fess/assets/fess.png" alt="Fess" style="height: 24px; display: inline;"></a></h6>
+        </div>
         @gitbucket.core.helper.html.paginator(page, result.hit_count, RepositorySearchService.CodeLimit, 10,
             s"${context.path}/fess?q=${helpers.urlEncode(result.query)}&type=code")
     }
