@@ -9,8 +9,8 @@ class Plugin extends gitbucket.core.plugin.Plugin {
   override val pluginName: String = "Fess Plugin"
   override val description: String = "Search GitBucket by Fess."
   override val versions: List[Version] = List(
-    new Version("4.6.0",
-      new LiquibaseMigration("update/gitbucket-fess_4.6.xml")
+    new Version("1.0.0",
+      new LiquibaseMigration("update/gitbucket-fess_1.0.xml")
     )
   )
 
