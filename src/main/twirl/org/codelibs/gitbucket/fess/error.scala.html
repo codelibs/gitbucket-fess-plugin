@@ -1,0 +1,8 @@
+@(query: String, message: String)(implicit context: gitbucket.core.controller.Context)
+@gitbucket.core.html.main("Search Results", None){
+    @org.codelibs.gitbucket.fess.html.sidebar("search") {
+        @org.codelibs.gitbucket.fess.html.menu("code", 0, 0, 0, query){
+            <h4>@message</h4>
+        }
+    }
+}

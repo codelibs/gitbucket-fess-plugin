@@ -4,12 +4,10 @@ import gitbucket.core.controller.ControllerBase
 import gitbucket.core.service.{AccountService, RepositoryService}
 import org.codelibs.gitbucket.fess.service.{FessSearchService, FessSettingService}
 import org.codelibs.gitbucket.fess.html
-import gitbucket.core.util.ControlUtil._
 import gitbucket.core.util._
 import gitbucket.core.util.Implicits._
 
 import io.github.gitbucket.scalatra.forms._
-import org.slf4j.LoggerFactory
 
 class FessSearchController extends FessSearchControllerBase
   with RepositoryService
@@ -35,8 +33,6 @@ trait FessSearchControllerBase extends ControllerBase {
     with FessSearchService
     with FessSettingService =>
 
-  val logger =  LoggerFactory.getLogger(getClass)
-
   case class SettingForm(url:   String, token: Option[String])
 
   val settingForm = mapping(
@@ -44,9 +40,13 @@ trait FessSearchControllerBase extends ControllerBase {
     "token"  -> trim(label("token", optional(text(length(60)))))
   )(SettingForm.apply)
 
+  val Display_num = 10 // number of documents per a page
+
   get("/fess")(usersOnly {
-    defining(params("q").trim, params.getOrElse("type", "code")){ case (query, target) =>
-      val Display_num = 10 // number of documents per a page
+    val userName = context.loginAccount.get.userName
+    getFessSettingByUserName(userName).map { setting =>
+      val query = params.getOrElse("q", "")
+      val target = params.getOrElse("type", "code")
       val page   = try {
         val i = params.getOrElse("page", "1").toInt
         if(i <= 0) 1 else i
@@ -57,9 +57,14 @@ trait FessSearchControllerBase extends ControllerBase {
 
       target.toLowerCase match {
         // case "issue" | "wiki" => // TODO
-        case _ => html.code(searchFiles(query, offset, Display_num), page)
+        case _ => {
+          searchFiles(query, setting, offset, Display_num) match {
+            case Right(result) => html.code(result, page)
+            case Left(message) => html.error(query, message)
+          }
+        }
       }
-    }
+    } getOrElse redirect("/fess/settings")
   })
 
   get("/fess/settings")(usersOnly {
@@ -77,10 +82,10 @@ trait FessSearchControllerBase extends ControllerBase {
     getFessSettingByUserName(userName).map { setting =>
       updateFessSetting(setting.copy(fessUrl=form.url, fessToken=form.token))
       flash += "info" -> "Fess setting has been updated."
-    } getOrElse({
+    } getOrElse {
       createFessSetting(userName, form.url, form.token)
       flash += "info" -> "Fess setting has been created."
-    })
+    }
     redirect("/fess?q=")
   })
 }
