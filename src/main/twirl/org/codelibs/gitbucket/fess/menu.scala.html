@@ -1,26 +1,25 @@
-@(active: String, fileCount: Int, issueCount: Int, wikiCount: Int, query : String,
-        recentRepositories: List[gitbucket.core.service.RepositoryService.RepositoryInfo],
-        userRepositories: List[gitbucket.core.service.RepositoryService.RepositoryInfo]
-)(body: Html)(implicit context: gitbucket.core.controller.Context)
+@(active: String, fileCount: Int, issueCount: Int, wikiCount: Int, query : String)(body: Html)(implicit context: gitbucket.core.controller.Context)
 @import gitbucket.core.view.helpers
 
-@gitbucket.core.dashboard.html.sidebar(recentRepositories, userRepositories){
-    <ul class="nav nav-tabs" style="margin-bottom: 20px;">
-        <li@if(active=="code"){ class="active"}>
-        @*<a href="@helpers.url(repository)/search?q=@helpers.urlEncode(query)&type=code">*@
-        <a href="#">
-            Files
-            @if(fileCount != 0){
-                <span class="badge">@fileCount</span>
-            }
-        </a>
-        </li>
-    </ul>
-    @*<form action="@helpers.url(repository)/search" method="GET" class="form-inline">*@
-    <form action="#" method="GET" class="form-inline">
-        <input type="text" name="q" value="@query" class="form-control" style="width: 400px; margin-bottom: 0px;"/>
-        <input type="submit" value="Search" class="btn btn-default"/>
-        <input type="hidden" name="type" value="@active"/>
-    </form>
-    @body
-}
+<div class="content-wrapper">
+    <div class="content body">
+        <ul class="nav nav-tabs" style="margin-bottom: 20px;">
+            <li@if(active=="code"){ class="active"}>
+            @*<a href="@helpers.url(repository)/search?q=@helpers.urlEncode(query)&type=code">*@
+            <a href="#">
+                Files
+                @if(fileCount != 0){
+                    <span class="badge">@fileCount</span>
+                }
+            </a>
+            </li>
+        </ul>
+        @*<form action="@helpers.url(repository)/search" method="GET" class="form-inline">*@
+        <form action="#" method="GET" class="form-inline">
+            <input type="text" name="q" value="@query" class="form-control" style="width: 400px; margin-bottom: 0px;"/>
+            <input type="submit" value="Search" class="btn btn-default"/>
+            <input type="hidden" name="type" value="@active"/>
+        </form>
+        @body
+    </div>
+</div>
