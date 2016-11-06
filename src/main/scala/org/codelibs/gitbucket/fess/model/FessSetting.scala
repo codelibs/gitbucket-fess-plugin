@@ -1,12 +1,12 @@
 package org.codelibs.gitbucket.fess.model
 
-trait FessSettingComponent { self: FessProfile =>
+trait FessSettingComponent { self: gitbucket.core.model.Profile =>
   import profile.simple._
   import self._
 
   lazy val FessSettings = TableQuery[FessSettings]
 
-  class FessSettings(tag: Tag) extends Table[FessSetting](tag, "FESSSETTING") {
+  class FessSettings(tag: Tag) extends Table[FessSetting](tag, "FESS_SETTING") {
     val userName = column[String]("USER_NAME", O PrimaryKey)
     val fessUrl = column[String]("FESS_URL")
     val fessToken = column[String]("FESS_TOKEN")

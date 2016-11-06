@@ -4,14 +4,14 @@
     <div class="content-wrapper">
         <div class="content body">
             <h1>Settings for Fess Search</h1>
-            <form id="form" method="post" action="@context.path/settings/options" validate="true">
+            <form id="form" method="post" action="@context.path/fess/settings" validate="true">
                 <fieldset class="form-group">
-                    <label for="fessUrl" class="strong"><h2>Fess URL: </h2></label>
-                    <input type="text" name="fessUrl" id="fessUrl" class="form-control" value="@url" required/>
-                    <span id="error-fessUrl" class="error"></span>
+                    <label for="url" class="strong"><h2>Fess URL: </h2></label>
+                    <input type="text" name="url" id="url" class="form-control" value="@url" required/>
+                    <span id="error-url" class="error"></span>
                 </fieldset>
                 <fieldset class="border-top form-group">
-                    <label for="fessToken" class="strong"><h2>User Token (Optional): </h2></label>
+                    <label for="token" class="strong"><h2>User Token (Optional): </h2></label>
                     <input type="text" name="description" id="description" class="form-control" value="@token"/>
                 </fieldset>
                 <div class="align-right" style="margin-top: 20px;">

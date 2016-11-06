@@ -2,10 +2,9 @@ package org.codelibs.gitbucket.fess.service
 
 import gitbucket.core.model.{Session => _, _}
 import org.codelibs.gitbucket.fess.model.FessSetting
-import org.codelibs.gitbucket.fess.model.FessProfile._
+import org.codelibs.gitbucket.fess.model.Profile._
 import profile.simple._
 
-//trait FessProfile extends CoreProfile with FessSettingComponent
 trait FessSettingService {
 
   def getFessSettingByUserName(userName: String)(implicit s: Session): Option[FessSetting] =
