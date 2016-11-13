@@ -21,12 +21,12 @@ trait FessSearchService {
 
   val SourceLabel = "gitbucket_source"
 
-  def searchFiles(query: String, setting: FessSetting, offset: Int, num: Int): Either[String, FessSearchResult] = {
+  def searchFiles(user: String, query: String, setting: FessSetting, offset: Int, num: Int): Either[String, FessSearchResult] = {
     implicit val formats = DefaultFormats
     try {
       val encodedQuery = URLEncoder.encode(query, "UTF-8")
       val encodedLabel = URLEncoder.encode("label:" + SourceLabel, "UTF-8")
-      val urlStr = s"${setting.fessUrl}/json/?q=$encodedQuery&start=$offset&num=$num&ex_q=$encodedLabel"
+      val urlStr = s"${setting.fessUrl}/json/?q=$encodedQuery&start=$offset&num=$num&ex_q=$encodedLabel&permission=1$user"
       val conn = new URL(urlStr).openConnection
       setting.fessToken.foreach(token => conn.addRequestProperty("Authorization", "Bearer " + token))
       val response = fromInputStream(conn.getInputStream).mkString

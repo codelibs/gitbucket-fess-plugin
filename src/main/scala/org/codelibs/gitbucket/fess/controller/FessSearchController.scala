@@ -58,7 +58,7 @@ trait FessSearchControllerBase extends ControllerBase {
       target.toLowerCase match {
         // case "issue" | "wiki" => // TODO
         case _ => {
-          searchFiles(query, setting, offset, Display_num) match {
+          searchFiles(userName, query, setting, offset, Display_num) match {
             case Right(result) => html.code(result, page)
             case Left(message) => html.error(query, message)
           }
