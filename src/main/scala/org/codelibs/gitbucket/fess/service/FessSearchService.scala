@@ -1,6 +1,7 @@
 package org.codelibs.gitbucket.fess.service
 
 import java.net.URL
+import java.net.URLEncoder
 
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
@@ -18,10 +19,15 @@ trait FessSearchService {
   import gitbucket.core.service.RepositorySearchService._
   val logger =  LoggerFactory.getLogger(getClass)
 
+  val SourceLabel = "gitbucket_source"
+
   def searchFiles(query: String, setting: FessSetting, offset: Int, num: Int): Either[String, FessSearchResult] = {
     implicit val formats = DefaultFormats
     try {
-      val conn = new URL(s"${setting.fessUrl}/json/?q=$query&start=$offset&num=$num").openConnection
+      val encodedQuery = URLEncoder.encode(query, "UTF-8")
+      val encodedLabel = URLEncoder.encode("label:" + SourceLabel, "UTF-8")
+      val urlStr = s"${setting.fessUrl}/json/?q=$encodedQuery&start=$offset&num=$num&ex_q=$encodedLabel"
+      val conn = new URL(urlStr).openConnection
       setting.fessToken.foreach(token => conn.addRequestProperty("Authorization", token))
       val response = fromInputStream(conn.getInputStream).mkString
       val fessJsonResponse = (parse(response) \ "response").extract[FessRawResponse]
@@ -57,7 +63,7 @@ trait FessSearchService {
   }
 
   def getRepositoryDataFromURL(url: String): (String, String, String, String) = {
-    val Pattern = ".*/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)/blob/([a-zA-Z0-9]+)/(.*)".r
+    val Pattern = ".*/([a-zA-Z0-9-_.]+)/([a-zA-Z0-9-_.]+)/blob/([a-zA-Z0-9-_.]+)/(.*)".r
     val Pattern(owner, repo, revStr, path) = url
     (owner, repo, revStr, path)
   }

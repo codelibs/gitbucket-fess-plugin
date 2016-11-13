@@ -4,31 +4,33 @@
 @import gitbucket.core.service.RepositorySearchService
 @gitbucket.core.html.main("Search Results", None){
     @org.codelibs.gitbucket.fess.html.sidebar("search") {
-        @org.codelibs.gitbucket.fess.html.menu("code", result.hit_count, 0, 0, result.query){
-            @if(result.query.isEmpty){
-
-            } else { @if(result.file_list.isEmpty){
-                <h4>We couldn't find any code matching '@result.query'</h4>
-            } else {
-                <h4>We've found @result.hit_count code @helpers.plural(result.hit_count, "result")</h4>
-            }  }
-            @result.file_list.map { file =>
-                <div>
-                    <h5>
-                        <a href=@{s"${context.path}/${file.owner}/${file.repo}"}>@file.owner/@file.repo</a>
-                            &#8211;
-                        <a href="@file.url">@file.title</a>
-                    </h5>
-                    @*<div class="small muted">Last committed @gitbucket.core.helper.html.datetimeago(file.lastModified)</div>*@
-                    <pre class="prettyprint linenums:@file.highlight_line_number" style="padding-left: 25px;">@Html(file.digest)</pre>
-                </div>
+        @org.codelibs.gitbucket.fess.html.menu("code", if(result.query.isEmpty) 0 else result.hit_count, 0, 0, result.query){
+            @if(!result.query.isEmpty){
+                @if(result.file_list.isEmpty){
+                    <h4>We couldn't find any code matching '@result.query'</h4>
+                } else {
+                    <h4>We've found @result.hit_count code @helpers.plural(result.hit_count, "result")</h4>
+                }
+                @result.file_list.map { file =>
+                    <div>
+                        <h5>
+                            <a href=@{s"${context.path}/${file.owner}/${file.repo}"}>@file.owner/@file.repo</a>
+                                &#8211;
+                            <a href="@file.url">@file.title</a>
+                        </h5>
+                        @*<div class="small muted">Last committed @gitbucket.core.helper.html.datetimeago(file.lastModified)</div>*@
+                        <pre class="prettyprint linenums:@file.highlight_line_number" style="padding-left: 25px;">@Html(file.digest)</pre>
+                    </div>
+                }
             }
             <hr>
             <div align="right">
                 <h6>Powered by <a href="http://fess.codelibs.org/"><img src="@context.path/plugin-assets/fess/assets/fess.png" alt="Fess" style="height: 24px; display: inline;"></a></h6>
             </div>
-            @gitbucket.core.helper.html.paginator(page, result.hit_count, RepositorySearchService.CodeLimit, 10,
-                s"${context.path}/fess?q=${helpers.urlEncode(result.query)}&type=code")
+            @if(!result.query.isEmpty){
+                @gitbucket.core.helper.html.paginator(page, result.hit_count, RepositorySearchService.CodeLimit, 10,
+                    s"${context.path}/fess?q=${helpers.urlEncode(result.query)}&type=code")
+            }
         }
     }
 }

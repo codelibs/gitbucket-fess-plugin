@@ -49,6 +49,11 @@ trait FessApiControllerBase extends ControllerBase {
     with FessSearchService
     =>
 
+  get("/api/v3/fess/label")(usersOnly{
+    contentType = "application/json"
+    JsonFormat(FessLabelResponse(List(SourceLabel)))
+  })
+
   get("/api/v3/fess/repos")(usersOnly{
     contentType = "application/json"
     val num:Int = params.getOrElse("num", "20").toIntOpt.getOrElse(20)
@@ -63,6 +68,8 @@ trait FessApiControllerBase extends ControllerBase {
   })
 }
 
+case class FessLabelResponse(source_label: List[String])
+
 case class FessRepositoryInfo(name: String,
                               owner: String,
                               is_private: Boolean,
@@ -73,4 +80,3 @@ case class FessResponse(total_count: Int,
                         response_count: Int,
                         offset: Int,
                         repositories: List[FessRepositoryInfo])
-
