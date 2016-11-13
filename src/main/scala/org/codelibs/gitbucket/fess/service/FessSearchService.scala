@@ -28,7 +28,7 @@ trait FessSearchService {
       val encodedLabel = URLEncoder.encode("label:" + SourceLabel, "UTF-8")
       val urlStr = s"${setting.fessUrl}/json/?q=$encodedQuery&start=$offset&num=$num&ex_q=$encodedLabel"
       val conn = new URL(urlStr).openConnection
-      setting.fessToken.foreach(token => conn.addRequestProperty("Authorization", token))
+      setting.fessToken.foreach(token => conn.addRequestProperty("Authorization", "Bearer " + token))
       val response = fromInputStream(conn.getInputStream).mkString
       val fessJsonResponse = (parse(response) \ "response").extract[FessRawResponse]
 
@@ -93,4 +93,3 @@ case class FessRawResponse(status: Int,
                            page_count: Int,
                            record_count: Int,
                            result: List[FessRawResult])
-
