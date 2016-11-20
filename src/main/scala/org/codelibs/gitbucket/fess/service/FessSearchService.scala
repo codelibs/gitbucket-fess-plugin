@@ -11,7 +11,7 @@ import gitbucket.core.util._
 import gitbucket.core.util.JGitUtil._
 import gitbucket.core.util.ControlUtil._
 import gitbucket.core.util.Directory._
-import org.codelibs.gitbucket.fess.model.FessSetting
+import org.codelibs.gitbucket.fess.service.FessSettingsService.FessSettings
 import org.eclipse.jgit.api.Git
 import org.slf4j.LoggerFactory
 
@@ -21,7 +21,7 @@ trait FessSearchService {
 
   val SourceLabel = "gitbucket_source"
 
-  def searchFiles(user: String, query: String, setting: FessSetting, offset: Int, num: Int): Either[String, FessSearchResult] = {
+  def searchFiles(user: String, query: String, setting: FessSettings, offset: Int, num: Int): Either[String, FessSearchResult] = {
     implicit val formats = DefaultFormats
     try {
       val encodedQuery = URLEncoder.encode(query, "UTF-8")

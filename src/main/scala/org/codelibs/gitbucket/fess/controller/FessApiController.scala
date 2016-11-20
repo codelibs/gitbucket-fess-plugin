@@ -10,42 +10,13 @@ import org.codelibs.gitbucket.fess.service.FessSearchService
 class FessApiApiController extends FessApiControllerBase
   with RepositoryService
   with AccountService
-  with ProtectedBranchService
-  with IssuesService
-  with LabelsService
-  with PullRequestService
-  with CommitStatusService
-  with RepositoryCreationService
-  with HandleCommentService
-  with WebHookService
-  with WebHookPullRequestService
-  with WebHookIssueCommentService
-  with WikiService
-  with ActivityService
-  with OwnerAuthenticator
   with UsersAuthenticator
-  with GroupManagerAuthenticator
-  with ReferrerAuthenticator
-  with ReadableUsersAuthenticator
-  with CollaboratorsAuthenticator
   with FessSearchService
 
 trait FessApiControllerBase extends ControllerBase {
   self: RepositoryService
     with AccountService
-    with ProtectedBranchService
-    with IssuesService
-    with LabelsService
-    with PullRequestService
-    with CommitStatusService
-    with RepositoryCreationService
-    with HandleCommentService
-    with OwnerAuthenticator
     with UsersAuthenticator
-    with GroupManagerAuthenticator
-    with ReferrerAuthenticator
-    with ReadableUsersAuthenticator
-    with CollaboratorsAuthenticator
     with FessSearchService
     =>
 

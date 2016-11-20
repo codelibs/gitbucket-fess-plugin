@@ -1,17 +1,17 @@
-@(url: String, token: String)(implicit context: gitbucket.core.controller.Context)
+@(url: String, token: String, isAdmin: Boolean)(implicit context: gitbucket.core.controller.Context)
 @gitbucket.core.html.main("Fess Setting", None){
-@org.codelibs.gitbucket.fess.html.sidebar("settings"){
+@org.codelibs.gitbucket.fess.html.sidebar("settings", isAdmin){
     <div class="content-wrapper">
         <div class="content body">
             <h1>Settings for Fess</h1>
             <form id="form" method="post" action="@context.path/fess/settings" validate="true">
                 <fieldset class="form-group">
-                    <label for="url" class="strong"><h2>Fess URL: </h2></label>
-                    <input type="text" name="url" id="url" class="form-control" value="@url" required/>
+                    <label for="fessUrl" class="strong"><h2>Fess URL: </h2></label>
+                    <input type="text" name="fessUrl" id="fessUrl" class="form-control" value="@url" required/>
                 </fieldset>
                 <fieldset class="form-group">
-                    <label for="token" class="strong"><h2>Access Token (Optional): </h2></label>
-                    <input type="text" name="token" id="token" class="form-control" value="@token"/>
+                    <label for="fessToken" class="strong"><h2>Access Token (Optional): </h2></label>
+                    <input type="text" name="fessToken" id="fessToken" class="form-control" value="@token"/>
                 </fieldset>
                 <div class="align-right" style="margin-top: 20px;">
                     <input type="submit" class="btn btn-success" value="Apply changes"/>

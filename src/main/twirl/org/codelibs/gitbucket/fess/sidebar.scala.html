@@ -1,4 +1,4 @@
-@(active: String)(body: Html)(implicit context: gitbucket.core.controller.Context)
+@(active: String, isAdmin: Boolean)(body: Html)(implicit context: gitbucket.core.controller.Context)
 <div class="main-sidebar">
     <div class="sidebar">
         <ul class="sidebar-menu">
@@ -7,11 +7,14 @@
                     <i class="menu-icon octicon octicon-search"></i> Search
                 </a>
             </li>
-            <li @if(active == "settings"){class="active"}>
-                <a href="@context.path/fess/settings">
-                    <i class="menu-icon octicon octicon-tools"></i> Settings
-                </a>
-            </li>
+            @if(isAdmin) {
+                <li @if(active == "settings") {
+                    class="active"}>
+                    <a href="@context.path/fess/settings">
+                        <i class="menu-icon octicon octicon-tools"></i> Settings
+                    </a>
+                </li>
+            }
         </ul>
     </div>
 </div>

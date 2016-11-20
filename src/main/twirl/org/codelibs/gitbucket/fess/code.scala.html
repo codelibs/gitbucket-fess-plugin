@@ -1,9 +1,9 @@
 @import org.codelibs.gitbucket.fess.service.FessSearchResult
-@(result: FessSearchResult, page: Int)(implicit context: gitbucket.core.controller.Context)
+@(result: FessSearchResult, page: Int, isAdmin: Boolean)(implicit context: gitbucket.core.controller.Context)
 @import gitbucket.core.view.helpers
 @import gitbucket.core.service.RepositorySearchService
 @gitbucket.core.html.main("Search Results", None){
-    @org.codelibs.gitbucket.fess.html.sidebar("search") {
+    @org.codelibs.gitbucket.fess.html.sidebar("search", isAdmin) {
         @org.codelibs.gitbucket.fess.html.menu("code", if(result.query.isEmpty) 0 else result.hit_count, 0, 0, result.query){
             @if(!result.query.isEmpty){
                 @if(result.file_list.isEmpty){
