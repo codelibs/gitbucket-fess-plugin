@@ -10,10 +10,16 @@ This plug-in uses [Fess](https://github.com/codelibs/fess) as a backend search e
 * **GitBucket**: 4.6 or later
 * **Fess**: 10.3 or later
 
+# Release
+
+| Version        | File                                                                                                                                                 |
+|:--------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------:|
+| 1.0.0-beta1    | [Download](http://central.maven.org/maven2/org/codelibs/gitbucket/gitbucket-fess-plugin_2.11/1.0.0-beta1/gitbucket-fess-plugin_2.11-1.0.0-beta1.jar) |
+
 # Getting Started
 
 ## Installation
-Run `./sbt.sh package`(use `sbt.bat` instead on Windows) and copy generated `/target/scala-2.11/gitbucket-fess-plugin_2.11-1.0.0.jar` to `~/.gitbucket/plugins` (If the directory does not exist, create its directory by hand).
+Download gitbucket-fess-plugin jar file and copy the file to `~/.gitbucket/plugins` (If the directory does not exist, create its directory by hand).
 
 We are planning to provide a jar file when the beta version is released.
 
@@ -66,4 +72,10 @@ In this page, you can also register a [Fess's access token](http://fess.codelibs
 This token is used to search for private repositories.
 
 Then, GitBucket users can access the search functionality powered by Fess!
+
+# Development
+
+## Build
+
+Run `./sbt.sh package` (use sbt.bat instead on Windows).
 
