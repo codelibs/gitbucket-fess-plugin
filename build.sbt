@@ -42,4 +42,11 @@ pomExtra := (
     <scm>
       <url>https://github.com/codelibs/gitbucket-fess-plugin</url>
       <connection>scm:git:https://github.com/codelibs/gitbucket-fess-plugin.git</connection>
-    </scm>)
+    </scm>
+    <developers>
+      <developer>
+        <id>codelibs-team</id>
+        <name>CodeLibs Team</name>
+      </developer>
+    </developers>
+)
