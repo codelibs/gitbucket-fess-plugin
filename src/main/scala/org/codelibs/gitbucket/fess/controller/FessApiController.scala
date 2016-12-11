@@ -31,9 +31,10 @@ trait FessApiControllerBase extends ControllerBase {
     val offset:Int = params.getOrElse("offset", "0").toIntOpt.getOrElse(0)
     val allRepos = getVisibleRepositories(context.loginAccount)
     val repos = allRepos.slice(offset, offset + num).map{
-      r => FessRepositoryInfo(
-        r.name, r.owner, r.repository.isPrivate,
-        r.issueCount, getCollaborators(r.owner, r.name))
+      r =>
+        FessRepositoryInfo(
+          r.name, r.owner, r.repository.isPrivate,
+          r.issueCount, getCollaboratorUserNames(r.owner, r.name))
     }
     JsonFormat(FessResponse(allRepos.size, repos.size, offset, repos))
   })

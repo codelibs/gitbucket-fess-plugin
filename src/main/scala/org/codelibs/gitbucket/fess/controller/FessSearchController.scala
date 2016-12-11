@@ -14,7 +14,7 @@ class FessSearchController extends FessSearchControllerBase
   with GroupManagerAuthenticator
   with ReferrerAuthenticator
   with ReadableUsersAuthenticator
-  with CollaboratorsAuthenticator
+  with WritableUsersAuthenticator
   with FessSearchService
   with FessSettingsService
 
@@ -26,7 +26,7 @@ trait FessSearchControllerBase extends ControllerBase {
     with GroupManagerAuthenticator
     with ReferrerAuthenticator
     with ReadableUsersAuthenticator
-    with CollaboratorsAuthenticator
+    with WritableUsersAuthenticator
     with FessSearchService
     with FessSettingsService
   =>
