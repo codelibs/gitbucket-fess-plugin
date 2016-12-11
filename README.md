@@ -12,16 +12,15 @@ This plug-in uses [Fess](https://github.com/codelibs/fess) as a backend search e
 
 # Release
 
-| Version        | File                                                                                                                                                 |
-|:--------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------:|
-| 1.0.0-beta1    | [Download](http://central.maven.org/maven2/org/codelibs/gitbucket/gitbucket-fess-plugin_2.11/1.0.0-beta1/gitbucket-fess-plugin_2.11-1.0.0-beta1.jar) |
+| Plugin version | GitBucket version | jar File                                                                                                                                             |
+|:--------------:|:-----------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------:|
+| master         | 4.7               | Build from source                                                                                                                                    |
+| 1.0.0-beta1    | 4.6               | [Download](http://central.maven.org/maven2/org/codelibs/gitbucket/gitbucket-fess-plugin_2.11/1.0.0-beta1/gitbucket-fess-plugin_2.11-1.0.0-beta1.jar) |
 
 # Getting Started
 
 ## Installation
 Download gitbucket-fess-plugin jar file and copy the file to `~/.gitbucket/plugins` (If the directory does not exist, create its directory by hand).
-
-We are planning to provide a jar file when the beta version is released.
 
 ## Setting Up
 After the installation, the admin user has to set up both of GitBucket and Fess.
@@ -68,7 +67,7 @@ After the crawling job finishes, you can search GitBucket's contents on Fess.
 ### Step 5. **[GitBucket]** Register information about Fess
 This is the final step.
 Access `http://[GitBucket URL]/fess/` as an admin user and register the URL of Fess.
-In this page, you can also register a [Fess's access token](http://fess.codelibs.org/10.3/admin/accesstoken-guide.html). 
+In this page, you can also register a [Fess's access token](http://fess.codelibs.org/10.3/admin/accesstoken-guide.html).
 This token is used to search for private repositories.
 
 Then, GitBucket users can access the search functionality powered by Fess!
@@ -78,4 +77,3 @@ Then, GitBucket users can access the search functionality powered by Fess!
 ## Build
 
 Run `./sbt.sh package` (use sbt.bat instead on Windows).
-
