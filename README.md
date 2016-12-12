@@ -15,6 +15,7 @@ This plug-in uses [Fess](https://github.com/codelibs/fess) as a backend search e
 | Plugin version | GitBucket version | jar File                                                                                                                                             |
 |:--------------:|:-----------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------:|
 | master         | 4.7               | Build from source                                                                                                                                    |
+| 1.0.0-beta2    | 4.7               | [Download](http://central.maven.org/maven2/org/codelibs/gitbucket/gitbucket-fess-plugin_2.11/1.0.0-beta2/gitbucket-fess-plugin_2.11-1.0.0-beta2.jar) |
 | 1.0.0-beta1    | 4.6               | [Download](http://central.maven.org/maven2/org/codelibs/gitbucket/gitbucket-fess-plugin_2.11/1.0.0-beta1/gitbucket-fess-plugin_2.11-1.0.0-beta1.jar) |
 
 # Getting Started
