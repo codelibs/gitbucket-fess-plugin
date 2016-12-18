@@ -10,23 +10,25 @@ import org.codelibs.gitbucket.fess.service.FessSearchService
 class FessApiApiController extends FessApiControllerBase
   with RepositoryService
   with AccountService
+  with AdminAuthenticator
   with UsersAuthenticator
+  with WikiService
   with FessSearchService
 
 trait FessApiControllerBase extends ControllerBase {
   self: RepositoryService
     with AccountService
+    with AdminAuthenticator
     with UsersAuthenticator
+    with WikiService
     with FessSearchService
     =>
 
   get("/api/v3/fess/label")(usersOnly{
-    contentType = "application/json"
     JsonFormat(FessLabelResponse(List(SourceLabel)))
   })
 
   get("/api/v3/fess/repos")(usersOnly{
-    contentType = "application/json"
     val num:Int = params.getOrElse("num", "20").toIntOpt.getOrElse(20)
     val offset:Int = params.getOrElse("offset", "0").toIntOpt.getOrElse(0)
     val allRepos = getVisibleRepositories(context.loginAccount)
@@ -38,6 +40,21 @@ trait FessApiControllerBase extends ControllerBase {
     }
     JsonFormat(FessResponse(allRepos.size, repos.size, offset, repos))
   })
+
+  get("/api/v3/fess/:owner/:repo/wiki")(adminOnly({
+    val owner = params.get("owner").get
+    val repo  = params.get("repo").get
+    JsonFormat(getWikiPageList(owner, repo).map(s => s.concat(".md")))
+  }))
+
+  get("/api/v3/fess/:owner/:repo/wiki/contents/:path")(adminOnly({
+    val owner = params.get("owner").get
+    val repo  = params.get("repo").get
+    contentType = "application/vnd.github.v3.raw"
+    params.get("path").flatMap(path =>
+      getFileContent(owner, repo, path)
+    ).getOrElse(Array.empty)
+  }))
 }
 
 case class FessLabelResponse(source_label: List[String])
