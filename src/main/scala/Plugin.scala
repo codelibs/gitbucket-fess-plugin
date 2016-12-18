@@ -1,7 +1,11 @@
 import gitbucket.core.controller.Context
 import gitbucket.core.plugin.Link
 import io.github.gitbucket.solidbase.model.Version
-import org.codelibs.gitbucket.fess.controller.{FessApiApiController, FessSearchController, FessSettingsController}
+import org.codelibs.gitbucket.fess.controller.{
+  FessApiApiController,
+  FessSearchController,
+  FessSettingsController
+}
 
 class Plugin extends gitbucket.core.plugin.Plugin {
   override val pluginId: String = "fess"

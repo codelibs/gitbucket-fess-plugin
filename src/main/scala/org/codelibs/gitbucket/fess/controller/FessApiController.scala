@@ -7,13 +7,14 @@ import gitbucket.core.controller.ControllerBase
 import gitbucket.core.util.Implicits._
 import org.codelibs.gitbucket.fess.service.FessSearchService
 
-class FessApiApiController extends FessApiControllerBase
-  with RepositoryService
-  with AccountService
-  with AdminAuthenticator
-  with UsersAuthenticator
-  with WikiService
-  with FessSearchService
+class FessApiApiController
+    extends FessApiControllerBase
+    with RepositoryService
+    with AccountService
+    with AdminAuthenticator
+    with UsersAuthenticator
+    with WikiService
+    with FessSearchService
 
 trait FessApiControllerBase extends ControllerBase {
   self: RepositoryService
@@ -21,39 +22,40 @@ trait FessApiControllerBase extends ControllerBase {
     with AdminAuthenticator
     with UsersAuthenticator
     with WikiService
-    with FessSearchService
-    =>
+    with FessSearchService =>
 
-  get("/api/v3/fess/label")(usersOnly{
+  get("/api/v3/fess/label")(usersOnly {
     JsonFormat(FessLabelResponse(List(SourceLabel)))
   })
 
-  get("/api/v3/fess/repos")(usersOnly{
-    val num:Int = params.getOrElse("num", "20").toIntOpt.getOrElse(20)
-    val offset:Int = params.getOrElse("offset", "0").toIntOpt.getOrElse(0)
+  get("/api/v3/fess/repos")(usersOnly {
+    val num: Int = params.getOrElse("num", "20").toIntOpt.getOrElse(20)
+    val offset: Int = params.getOrElse("offset", "0").toIntOpt.getOrElse(0)
     val allRepos = getVisibleRepositories(context.loginAccount)
-    val repos = allRepos.slice(offset, offset + num).map{
-      r =>
-        FessRepositoryInfo(
-          r.name, r.owner, r.repository.isPrivate,
-          r.issueCount, getCollaboratorUserNames(r.owner, r.name))
+    val repos = allRepos.slice(offset, offset + num).map { r =>
+      FessRepositoryInfo(r.name,
+                         r.owner,
+                         r.repository.isPrivate,
+                         r.issueCount,
+                         getCollaboratorUserNames(r.owner, r.name))
     }
     JsonFormat(FessResponse(allRepos.size, repos.size, offset, repos))
   })
 
   get("/api/v3/fess/:owner/:repo/wiki")(adminOnly({
     val owner = params.get("owner").get
-    val repo  = params.get("repo").get
+    val repo = params.get("repo").get
     JsonFormat(getWikiPageList(owner, repo).map(s => s.concat(".md")))
   }))
 
   get("/api/v3/fess/:owner/:repo/wiki/contents/:path")(adminOnly({
     val owner = params.get("owner").get
-    val repo  = params.get("repo").get
+    val repo = params.get("repo").get
     contentType = "application/vnd.github.v3.raw"
-    params.get("path").flatMap(path =>
-      getFileContent(owner, repo, path)
-    ).getOrElse(Array.empty)
+    params
+      .get("path")
+      .flatMap(path => getFileContent(owner, repo, path))
+      .getOrElse(Array.empty)
   }))
 }
 

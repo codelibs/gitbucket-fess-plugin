@@ -17,30 +17,48 @@ import org.slf4j.LoggerFactory
 
 trait FessSearchService {
   import gitbucket.core.service.RepositorySearchService._
-  val logger =  LoggerFactory.getLogger(getClass)
+  val logger = LoggerFactory.getLogger(getClass)
 
   val SourceLabel = "gitbucket_source"
 
-  def searchFiles(user: String, query: String, setting: FessSettings, offset: Int, num: Int): Either[String, FessSearchResult] = {
+  def searchFiles(user: String,
+                  query: String,
+                  setting: FessSettings,
+                  offset: Int,
+                  num: Int): Either[String, FessSearchResult] = {
     implicit val formats = DefaultFormats
     try {
       val encodedQuery = URLEncoder.encode(query, "UTF-8")
       val encodedLabel = URLEncoder.encode("label:" + SourceLabel, "UTF-8")
-      val urlStr = s"${setting.fessUrl}/json/?q=$encodedQuery&start=$offset&num=$num&ex_q=$encodedLabel&permission=1$user"
+      val urlStr =
+        s"${setting.fessUrl}/json/?q=$encodedQuery&start=$offset&num=$num&ex_q=$encodedLabel&permission=1$user"
       val conn = new URL(urlStr).openConnection
-      setting.fessToken.foreach(token => conn.addRequestProperty("Authorization", "Bearer " + token))
+      setting.fessToken.foreach(token =>
+        conn.addRequestProperty("Authorization", "Bearer " + token))
       val response = fromInputStream(conn.getInputStream).mkString
-      val fessJsonResponse = (parse(response) \ "response").extract[FessRawResponse]
+      val fessJsonResponse =
+        (parse(response) \ "response").extract[FessRawResponse]
 
       val fileList = fessJsonResponse.result.map(result => {
         val (owner, repo, branch, path) = getRepositoryDataFromURL(result.url)
-        val content = getContent(owner, repo, branch, path).getOrElse(result.digest)
-        val (highlightText, highlightLineNumber)  = getHighlightText(content, query)
-        FessFileInfo(owner, repo, result.url, result.title, highlightText, highlightLineNumber)
+        val content =
+          getContent(owner, repo, branch, path).getOrElse(result.digest)
+        val (highlightText, highlightLineNumber) =
+          getHighlightText(content, query)
+        FessFileInfo(owner,
+                     repo,
+                     result.url,
+                     result.title,
+                     highlightText,
+                     highlightLineNumber)
       })
-      Right(FessSearchResult(query, offset, fessJsonResponse.record_count, fileList))
+      Right(
+        FessSearchResult(query,
+                         offset,
+                         fessJsonResponse.record_count,
+                         fileList))
     } catch {
-      case e:org.eclipse.jgit.errors.RepositoryNotFoundException => {
+      case e: org.eclipse.jgit.errors.RepositoryNotFoundException => {
         logger.info(e.getMessage, e)
         Left(e.getMessage)
       }
@@ -48,27 +66,32 @@ trait FessSearchService {
         logger.info(e.getMessage, e)
         Left(s"Failed to connect to ${setting.fessUrl}")
       }
-      case e:Throwable => {
+      case e: Throwable => {
         logger.info(e.getMessage, e)
         Left(e.getMessage)
       }
     }
   }
 
-  def getContent(owner: String, repo: String, revStr: String, path: String): Option[String] = {
-    using(Git.open(getRepositoryDir(owner, repo))){ git =>
-      val revCommit = JGitUtil.getRevCommitFromId(git, git.getRepository.resolve(revStr))
-      getContentFromPath(git, revCommit.getTree, path, false).map(x => new String(x))
+  def getContent(owner: String,
+                 repo: String,
+                 revStr: String,
+                 path: String): Option[String] = {
+    using(Git.open(getRepositoryDir(owner, repo))) { git =>
+      val revCommit =
+        JGitUtil.getRevCommitFromId(git, git.getRepository.resolve(revStr))
+      getContentFromPath(git, revCommit.getTree, path, false).map(x =>
+        new String(x))
     }
   }
 
   def getRepositoryDataFromURL(url: String): (String, String, String, String) = {
-    val Pattern = ".*/([a-zA-Z0-9-_.]+)/([a-zA-Z0-9-_.]+)/blob/([a-zA-Z0-9-_.]+)/(.*)".r
+    val Pattern =
+      ".*/([a-zA-Z0-9-_.]+)/([a-zA-Z0-9-_.]+)/blob/([a-zA-Z0-9-_.]+)/(.*)".r
     val Pattern(owner, repo, revStr, path) = url
     (owner, repo, revStr, path)
   }
 }
-
 
 case class FessSearchResult(query: String,
                             offset: Int,

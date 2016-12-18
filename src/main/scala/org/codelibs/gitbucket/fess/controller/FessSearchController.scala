@@ -2,21 +2,25 @@ package org.codelibs.gitbucket.fess.controller
 
 import gitbucket.core.controller.ControllerBase
 import gitbucket.core.service.{AccountService, RepositoryService}
-import org.codelibs.gitbucket.fess.service.{FessSearchService, FessSettingsService}
+import org.codelibs.gitbucket.fess.service.{
+  FessSearchService,
+  FessSettingsService
+}
 import org.codelibs.gitbucket.fess.html
 import gitbucket.core.util._
 
-class FessSearchController extends FessSearchControllerBase
-  with RepositoryService
-  with AccountService
-  with OwnerAuthenticator
-  with UsersAuthenticator
-  with GroupManagerAuthenticator
-  with ReferrerAuthenticator
-  with ReadableUsersAuthenticator
-  with WritableUsersAuthenticator
-  with FessSearchService
-  with FessSettingsService
+class FessSearchController
+    extends FessSearchControllerBase
+    with RepositoryService
+    with AccountService
+    with OwnerAuthenticator
+    with UsersAuthenticator
+    with GroupManagerAuthenticator
+    with ReferrerAuthenticator
+    with ReadableUsersAuthenticator
+    with WritableUsersAuthenticator
+    with FessSearchService
+    with FessSettingsService
 
 trait FessSearchControllerBase extends ControllerBase {
   self: RepositoryService
@@ -28,8 +32,7 @@ trait FessSearchControllerBase extends ControllerBase {
     with ReadableUsersAuthenticator
     with WritableUsersAuthenticator
     with FessSearchService
-    with FessSettingsService
-  =>
+    with FessSettingsService =>
 
   val Display_num = 10 // number of documents per a page
 
@@ -62,9 +65,11 @@ trait FessSearchControllerBase extends ControllerBase {
       if (isAdmin) {
         redirect("/fess/settings")
       } else {
-        html.error("", "Settings for Fess are not finished yet. Please contact the administrator.", isAdmin)
+        html.error(
+          "",
+          "Settings for Fess are not finished yet. Please contact the administrator.",
+          isAdmin)
       }
     }
   })
 }
-
