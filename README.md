@@ -1,8 +1,8 @@
 gitbucket-fess-plugin
 ==
 
-This is a [GitBucket](https://github.com/gitbucket/gitbucket) plug-in that provides search functionality across multiple repositories.
-This plug-in uses [Fess](https://github.com/codelibs/fess) as a backend search engine, so response times are much shorter than that of GitBucket's default search functionality.
+This is a [GitBucket](https://github.com/gitbucket/gitbucket) plug-in that provides **search functionality across multiple repositories**.
+This search is performed **faster than** GitBucket's default search, since [Fess](https://github.com/codelibs/fess) is used as a backend search engine.
 
 ![ScreenShot](screenshot.png)
 
