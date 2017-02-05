@@ -20,6 +20,8 @@ trait FessSearchService {
   val logger = LoggerFactory.getLogger(getClass)
 
   val SourceLabel = "gitbucket_source"
+  val IssueLabel = "gitbucket_issue"
+  val WikiLabel = "gitbucket_wiki"
 
   def searchFiles(user: String,
                   query: String,
