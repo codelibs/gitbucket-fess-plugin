@@ -7,7 +7,7 @@ import gitbucket.core.controller.ControllerBase
 import gitbucket.core.util.Implicits._
 import org.codelibs.gitbucket.fess.service.FessSearchService
 
-class FessApiApiController
+class FessApiController
     extends FessApiControllerBase
     with RepositoryService
     with AccountService
