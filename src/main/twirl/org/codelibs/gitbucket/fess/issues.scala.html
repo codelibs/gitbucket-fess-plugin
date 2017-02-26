@@ -1,0 +1,42 @@
+@import org.codelibs.gitbucket.fess.service.FessIssueSearchResult
+@(result: FessIssueSearchResult, page: Int, isAdmin: Boolean)(implicit context: gitbucket.core.controller.Context)
+@import gitbucket.core.view.helpers
+@import gitbucket.core.service.RepositorySearchService
+@gitbucket.core.html.main("Search Results", None){
+    @org.codelibs.gitbucket.fess.html.sidebar("search", isAdmin) {
+        @org.codelibs.gitbucket.fess.html.menu("issues", 0, if(result.query.isEmpty) 0 else result.hit_count, 0, result.query){
+            @if(!result.query.isEmpty){
+                @if(result.issue_list.isEmpty){
+                    <h4>We couldn't find any code matching '@result.query'</h4>
+                } else {
+                    <h4>We've found @result.hit_count @helpers.plural(result.hit_count, "issue")</h4>
+                }
+                @result.issue_list.map { case (owner, repo, issue) =>
+                    <div class="block">
+                        <div class="pull-right muted">#@issue.issueId</div>
+                        <h4 style="margin-top: 0px;"><a href="@context.path/@owner/@repo/@if(issue.isPullRequest){pull} else {issues}/@issue.issueId">@issue.title</a></h4>
+                        @if(issue.highlightText.nonEmpty){
+                            <pre>@Html(issue.highlightText)</pre>
+                        }
+                        <div class="small muted">
+                            Opened by <a href="@helpers.url(issue.openedUserName)" class="username">@issue.openedUserName</a>
+                            @gitbucket.core.helper.html.datetimeago(issue.registeredDate)
+                            @if(issue.commentCount > 0){
+                                    &nbsp;&nbsp;<i class="octicon octicon-comment"></i>
+                                <span class="strong">@issue.commentCount</span> @helpers.plural(issue.commentCount, "comment")
+                            }
+                        </div>
+                    </div>
+                }
+            }
+            <hr>
+            <div align="right">
+                <h6>Powered by <a href="http://fess.codelibs.org/"><img src="@context.path/plugin-assets/fess/assets/fess.png" alt="Fess" style="height: 24px; display: inline;"></a></h6>
+            </div>
+            @if(!result.query.isEmpty){
+                @gitbucket.core.helper.html.paginator(page, result.hit_count, RepositorySearchService.CodeLimit, 10,
+                    s"${context.path}/fess?q=${helpers.urlEncode(result.query)}&type=issues")
+            }
+        }
+    }
+}

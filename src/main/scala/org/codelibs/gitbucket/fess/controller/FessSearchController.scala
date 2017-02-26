@@ -1,16 +1,30 @@
 package org.codelibs.gitbucket.fess.controller
 
 import gitbucket.core.controller.ControllerBase
-import gitbucket.core.service.{AccountService, RepositoryService}
-import org.codelibs.gitbucket.fess.service.{
-  FessSearchService,
-  FessSettingsService
-}
+import gitbucket.core.service.{AccountService, ActivityService, IssuesService, RepositoryService}
+import org.codelibs.gitbucket.fess.service.{FessSearchService, FessSettingsService}
 import org.codelibs.gitbucket.fess.html
 import gitbucket.core.util._
+import gitbucket.core.util.Implicits._
 
-class FessSearchController
-    extends FessSearchControllerBase
+class FessSearchController extends FessSearchControllerBase
+  with FessSearchService
+  with ActivityService
+  with IssuesService
+  with RepositoryService
+  with AccountService
+  with OwnerAuthenticator
+  with UsersAuthenticator
+  with GroupManagerAuthenticator
+  with ReferrerAuthenticator
+  with ReadableUsersAuthenticator
+  with WritableUsersAuthenticator
+  with FessSettingsService
+
+trait FessSearchControllerBase extends ControllerBase {
+  self: FessSearchService
+    with ActivityService
+    with IssuesService
     with RepositoryService
     with AccountService
     with OwnerAuthenticator
@@ -19,19 +33,6 @@ class FessSearchController
     with ReferrerAuthenticator
     with ReadableUsersAuthenticator
     with WritableUsersAuthenticator
-    with FessSearchService
-    with FessSettingsService
-
-trait FessSearchControllerBase extends ControllerBase {
-  self: RepositoryService
-    with AccountService
-    with OwnerAuthenticator
-    with UsersAuthenticator
-    with GroupManagerAuthenticator
-    with ReferrerAuthenticator
-    with ReadableUsersAuthenticator
-    with WritableUsersAuthenticator
-    with FessSearchService
     with FessSettingsService =>
 
   val Display_num = 10 // number of documents per a page
@@ -52,9 +53,15 @@ trait FessSearchControllerBase extends ControllerBase {
       }
       val offset = (page - 1) * Display_num
       target.toLowerCase match {
-        // case "issue" | "wiki" => // TODO
-        case _ => {
-          searchFiles(userName, query, settings, offset, Display_num) match {
+        // case "issues" | "wiki" => // TODO
+        case "issues" => {
+          searchIssuesByFess(userName, query, settings, offset, Display_num) match {
+            case Right(result) => html.issues(result, page, isAdmin)
+            case Left(message) => html.error(query, message, isAdmin)
+          }
+        }
+        case _ => { // "code"
+          searchFilesByFess(userName, query, settings, offset, Display_num) match {
             case Right(result) => html.code(result, page, isAdmin)
             case Left(message) => html.error(query, message, isAdmin)
           }

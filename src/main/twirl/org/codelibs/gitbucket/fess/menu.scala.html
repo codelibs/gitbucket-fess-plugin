@@ -4,15 +4,31 @@
 <div class="content-wrapper">
     <div class="content body">
         <ul class="nav nav-tabs" style="margin-bottom: 20px;">
-            <li@if(active=="code"){ class="active"}>
-            @*<a href="@helpers.url(repository)/search?q=@helpers.urlEncode(query)&type=code">*@
-            <a href="#">
-                Files
-                @if(fileCount != 0){
-                    <span class="badge">@fileCount</span>
-                }
-            </a>
+            <li @if(active=="code"){ class="active"}>
+                @*<a href="@helpers.url(repository)/search?q=@helpers.urlEncode(query)&type=code">*@
+                <a href="@context.baseUrl/fess?q=@query&type=code">
+                    Files
+                    @if(fileCount != 0){
+                        <span class="badge">@fileCount</span>
+                    }
+                </a>
             </li>
+            <li @if(active == "issues"){ class="active" }>
+                <a href="@context.baseUrl/fess?q=@query&type=issues">
+                    Issues
+                    @if(issueCount != 0){
+                        <span class="badge">@issueCount</span>
+                    }
+                </a>
+            </li>
+            @*<li @if(active == "wiki"){ class="active" }>
+                <a href="@context.baseUrl/fess?q=@query&type=wiki">
+                    Wiki
+                    @if(wikiCount != 0){
+                        <span class="badge">@wikiCount</span>
+                    }
+                </a>
+            </li>*@
         </ul>
         @*<form action="@helpers.url(repository)/search" method="GET" class="form-inline">*@
         <form action="#" method="GET" class="form-inline">
