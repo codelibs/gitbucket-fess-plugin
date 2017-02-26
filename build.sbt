@@ -4,7 +4,7 @@ organization := "org.codelibs.gitbucket"
 
 version := "1.0.0-SNAPSHOT"
 
-scalaVersion := "2.11.8"
+scalaVersion := "2.12.1"
 
 lazy val root = (project in file(".")).enablePlugins(SbtTwirl)
 
@@ -13,10 +13,10 @@ resolvers ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "io.github.gitbucket" %% "gitbucket" % "4.9.0" % "provided",
-  "com.typesafe.play" %% "twirl-compiler" % "1.0.4" % "provided",
-  "org.json4s" %% "json4s-jackson" % "3.3.0",
-  "javax.servlet" % "javax.servlet-api" % "3.1.0" % "provided"
+  "io.github.gitbucket" %% "gitbucket" % "4.10.0" % "provided",
+  "com.typesafe.play" %% "twirl-compiler" % "1.3.0" % "provided",
+  "org.json4s" %% "json4s-jackson" % "3.5.0",
+  "javax.servlet" % "javax.servlet-api" % "3.0.1" % "provided"
 )
 
 publishMavenStyle := true
