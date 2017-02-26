@@ -13,10 +13,10 @@ resolvers ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "io.github.gitbucket" %% "gitbucket" % "4.10.0" % "provided",
-  "com.typesafe.play" %% "twirl-compiler" % "1.3.0" % "provided",
-  "org.json4s" %% "json4s-jackson" % "3.5.0",
-  "javax.servlet" % "javax.servlet-api" % "3.0.1" % "provided"
+  "io.github.gitbucket" %% "gitbucket"        % "4.10.0" % "provided",
+  "com.typesafe.play"   %% "twirl-compiler"   % "1.3.0" % "provided",
+  "org.json4s"          %% "json4s-jackson"   % "3.5.0",
+  "javax.servlet"       % "javax.servlet-api" % "3.0.1" % "provided"
 )
 
 publishMavenStyle := true

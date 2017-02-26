@@ -16,7 +16,7 @@ trait FessSettingsControllerBase extends ControllerBase {
   self: FessSettingsService with AdminAuthenticator =>
 
   val settingsForm = mapping(
-    "fessUrl" -> text(required, maxlength(200)),
+    "fessUrl"   -> text(required, maxlength(200)),
     "fessToken" -> optional(text(length(60)))
   )(FessSettings.apply)
 

@@ -12,7 +12,7 @@ trait FessSettingsService {
 
   val FessConf = new File(GitBucketHome, "fess.conf")
 
-  def saveFessSettings(settings: FessSettings): Unit = {
+  def saveFessSettings(settings: FessSettings): Unit =
     defining(new java.util.Properties()) { props =>
       props.setProperty(FessURL, settings.fessUrl)
       settings.fessToken.foreach(x => props.setProperty(FessToken, x))
@@ -20,9 +20,8 @@ trait FessSettingsService {
         props.store(out, null)
       }
     }
-  }
 
-  def loadFessSettings(): FessSettings = {
+  def loadFessSettings(): FessSettings =
     defining(new java.util.Properties()) { props =>
       if (FessConf.exists) {
         using(new java.io.FileInputStream(FessConf)) { in =>
@@ -34,7 +33,6 @@ trait FessSettingsService {
         getOptionValue(props, FessToken, None)
       )
     }
-  }
 }
 
 object FessSettingsService {
@@ -42,7 +40,7 @@ object FessSettingsService {
 
   case class FessSettings(fessUrl: String, fessToken: Option[String])
 
-  private val FessURL = "fess_url"
+  private val FessURL   = "fess_url"
   private val FessToken = "fess_token"
 
   private def getValue[A: ClassTag](props: java.util.Properties,

@@ -1,25 +1,34 @@
 package org.codelibs.gitbucket.fess.controller
 
 import gitbucket.core.controller.ControllerBase
-import gitbucket.core.service.{AccountService, ActivityService, IssuesService, RepositoryService}
-import org.codelibs.gitbucket.fess.service.{FessSearchService, FessSettingsService}
+import gitbucket.core.service.{
+  AccountService,
+  ActivityService,
+  IssuesService,
+  RepositoryService
+}
+import org.codelibs.gitbucket.fess.service.{
+  FessSearchService,
+  FessSettingsService
+}
 import org.codelibs.gitbucket.fess.html
 import gitbucket.core.util._
 import gitbucket.core.util.Implicits._
 
-class FessSearchController extends FessSearchControllerBase
-  with FessSearchService
-  with ActivityService
-  with IssuesService
-  with RepositoryService
-  with AccountService
-  with OwnerAuthenticator
-  with UsersAuthenticator
-  with GroupManagerAuthenticator
-  with ReferrerAuthenticator
-  with ReadableUsersAuthenticator
-  with WritableUsersAuthenticator
-  with FessSettingsService
+class FessSearchController
+    extends FessSearchControllerBase
+    with FessSearchService
+    with ActivityService
+    with IssuesService
+    with RepositoryService
+    with AccountService
+    with OwnerAuthenticator
+    with UsersAuthenticator
+    with GroupManagerAuthenticator
+    with ReferrerAuthenticator
+    with ReadableUsersAuthenticator
+    with WritableUsersAuthenticator
+    with FessSettingsService
 
 trait FessSearchControllerBase extends ControllerBase {
   self: FessSearchService
@@ -39,11 +48,11 @@ trait FessSearchControllerBase extends ControllerBase {
 
   get("/fess")(usersOnly {
     val userName = context.loginAccount.get.userName
-    val isAdmin = context.loginAccount.get.isAdmin
+    val isAdmin  = context.loginAccount.get.isAdmin
     val settings = loadFessSettings()
     if (!settings.fessUrl.isEmpty) {
       // Settings is done
-      val query = params.getOrElse("q", "")
+      val query  = params.getOrElse("q", "")
       val target = params.getOrElse("type", "code")
       val page = try {
         val i = params.getOrElse("page", "1").toInt

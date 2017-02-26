@@ -40,9 +40,9 @@ trait FessApiControllerBase extends ControllerBase {
   })
 
   get("/api/v3/fess/repos")(usersOnly {
-    val num: Int = params.getOrElse("num", "20").toIntOpt.getOrElse(20)
+    val num: Int    = params.getOrElse("num", "20").toIntOpt.getOrElse(20)
     val offset: Int = params.getOrElse("offset", "0").toIntOpt.getOrElse(0)
-    val allRepos = getVisibleRepositories(context.loginAccount)
+    val allRepos    = getVisibleRepositories(context.loginAccount)
     val repos =
       allRepos.slice(offset, offset + num).map {
         r =>
@@ -50,9 +50,11 @@ trait FessApiControllerBase extends ControllerBase {
             // Note: 'r.issueCount' and 'r.pullCount' are always 0 (See the implementation of 'getVisibleRepositories')
             // Thus, we should compute them here.
             val countFn = (state: String, isPull: Boolean) =>
-              countIssue(IssueSearchCondition(state = state), isPull, (r.owner, r.name))
+              countIssue(IssueSearchCondition(state = state),
+                         isPull,
+                         (r.owner, r.name))
             val issueCount = countFn("open", false) + countFn("closed", false)
-            val pullCount = countFn("open", true) + countFn("closed", true)
+            val pullCount  = countFn("open", true) + countFn("closed", true)
 
             FessRepositoryInfo(r.name,
                                r.owner,
@@ -67,14 +69,14 @@ trait FessApiControllerBase extends ControllerBase {
 
   get("/api/v3/fess/:owner/:repo/wiki")(adminOnly({
     val owner = params.get("owner").get
-    val repo = params.get("repo").get
+    val repo  = params.get("repo").get
     FessWikiPageList(
       getWikiPageList(owner, repo).map(java.net.URLEncoder.encode(_, "UTF-8")))
   }))
 
   get("/api/v3/fess/:owner/:repo/wiki/contents/:path")(adminOnly({
     val owner = params.get("owner").get
-    val repo = params.get("repo").get
+    val repo  = params.get("repo").get
     contentType = "application/vnd.github.v3.raw"
     params
       .get("path")
