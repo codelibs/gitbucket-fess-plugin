@@ -16,7 +16,7 @@ This search is performed **faster than** GitBucket's default search, since [Fess
 
 | Plugin version | GitBucket version | jar File                                                                                                                                             |
 |:--------------:|:-----------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------:|
-| master         | 4.9               | Build from source                                                                                                                                    |
+| master         | 4.10              | Build from source                                                                                                                                    |
 | 1.0.0-beta2    | 4.7               | [Download](http://central.maven.org/maven2/org/codelibs/gitbucket/gitbucket-fess-plugin_2.11/1.0.0-beta2/gitbucket-fess-plugin_2.11-1.0.0-beta2.jar) |
 | 1.0.0-beta1    | 4.6               | [Download](http://central.maven.org/maven2/org/codelibs/gitbucket/gitbucket-fess-plugin_2.11/1.0.0-beta1/gitbucket-fess-plugin_2.11-1.0.0-beta1.jar) |
 
