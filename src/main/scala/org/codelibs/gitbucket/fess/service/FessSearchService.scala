@@ -5,7 +5,7 @@ import java.net.URLEncoder
 
 import gitbucket.core.model.{Issue, Session}
 import gitbucket.core.service.RepositorySearchService.IssueSearchResult
-import gitbucket.core.service.IssuesService
+import gitbucket.core.service.{IssuesService, WikiService}
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
 
@@ -18,7 +18,7 @@ import org.codelibs.gitbucket.fess.service.FessSettingsService.FessSettings
 import org.eclipse.jgit.api.Git
 import org.slf4j.LoggerFactory
 
-trait FessSearchService { self: IssuesService =>
+trait FessSearchService { self: IssuesService with WikiService =>
   import gitbucket.core.service.RepositorySearchService._
 
   val logger = LoggerFactory.getLogger(getClass)
@@ -152,6 +152,55 @@ trait FessSearchService { self: IssuesService =>
     }
   }
 
+  def searchWikiByFess(user: String,
+                       query: String,
+                       setting: FessSettings,
+                       offset: Int,
+                       num: Int)(
+      implicit session: Session): Either[String, FessWikiSearchResult] = {
+    implicit val formats = DefaultFormats
+    try {
+      val response =
+        searchByFess(user, query, setting, offset, num, WikiLabel)
+
+      val fessJsonResponse =
+        (parse(response) \ "response").extract[FessRawResponse]
+
+      val wikiList = fessJsonResponse.result.flatMap(result => {
+        val (owner, repo, filename) = getWikiDataFromURL(result.url)
+        logger.info("HOGE: " + filename)
+        getWikiPage(owner, repo, filename).map(wikiInfo => {
+          val (highlightText, highlightLineNumber) =
+            getHighlightText(wikiInfo.content, query)
+          FessWikiInfo(owner,
+                       repo,
+                       result.url,
+                       filename,
+                       highlightText,
+                       highlightLineNumber)
+        })
+      })
+      Right(
+        FessWikiSearchResult(query,
+                             offset,
+                             fessJsonResponse.record_count,
+                             wikiList))
+    } catch {
+      case e: org.eclipse.jgit.errors.RepositoryNotFoundException => {
+        logger.info(e.getMessage, e)
+        Left(e.getMessage)
+      }
+      case e: java.net.UnknownHostException => {
+        logger.info(e.getMessage, e)
+        Left(s"Failed to connect to ${setting.fessUrl}")
+      }
+      case e: Throwable => {
+        logger.info(e.getMessage, e)
+        Left(e.getMessage)
+      }
+    }
+  }
+
   def getContent(owner: String,
                  repo: String,
                  revStr: String,
@@ -175,6 +224,13 @@ trait FessSearchService { self: IssuesService =>
     val Pattern(owner, repo, issueId) = url
     (owner, repo, issueId)
   }
+
+  def getWikiDataFromURL(url: String): (String, String, String) = {
+    val Pattern =
+      ".*/([a-zA-Z0-9-_.]+)/([a-zA-Z0-9-_.]+)/wiki/(.*)".r
+    val Pattern(owner, repo, filename) = url
+    (owner, repo, java.net.URLDecoder.decode(filename, "UTF-8"))
+  }
 }
 
 case class FessSearchResult(query: String,
@@ -188,7 +244,19 @@ case class FessIssueSearchResult(
     hit_count: Int,
     issue_list: List[(String, String, IssueSearchResult)])
 
+case class FessWikiSearchResult(query: String,
+                                offset: Int,
+                                hit_count: Int,
+                                wiki_list: List[FessWikiInfo])
+
 case class FessFileInfo(owner: String,
+                        repo: String,
+                        url: String,
+                        title: String,
+                        digest: String,
+                        highlight_line_number: Int)
+
+case class FessWikiInfo(owner: String,
                         repo: String,
                         url: String,
                         title: String,

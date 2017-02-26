@@ -21,14 +21,14 @@
                     }
                 </a>
             </li>
-            @*<li @if(active == "wiki"){ class="active" }>
+            <li @if(active == "wiki"){ class="active" }>
                 <a href="@context.baseUrl/fess?q=@query&type=wiki">
                     Wiki
                     @if(wikiCount != 0){
                         <span class="badge">@wikiCount</span>
                     }
                 </a>
-            </li>*@
+            </li>
         </ul>
         @*<form action="@helpers.url(repository)/search" method="GET" class="form-inline">*@
         <form action="#" method="GET" class="form-inline">

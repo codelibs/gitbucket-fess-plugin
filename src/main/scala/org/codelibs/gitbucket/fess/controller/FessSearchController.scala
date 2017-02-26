@@ -1,12 +1,7 @@
 package org.codelibs.gitbucket.fess.controller
 
 import gitbucket.core.controller.ControllerBase
-import gitbucket.core.service.{
-  AccountService,
-  ActivityService,
-  IssuesService,
-  RepositoryService
-}
+import gitbucket.core.service._
 import org.codelibs.gitbucket.fess.service.{
   FessSearchService,
   FessSettingsService
@@ -20,6 +15,7 @@ class FessSearchController
     with FessSearchService
     with ActivityService
     with IssuesService
+    with WikiService
     with RepositoryService
     with AccountService
     with OwnerAuthenticator
@@ -34,6 +30,7 @@ trait FessSearchControllerBase extends ControllerBase {
   self: FessSearchService
     with ActivityService
     with IssuesService
+    with WikiService
     with RepositoryService
     with AccountService
     with OwnerAuthenticator
@@ -62,10 +59,15 @@ trait FessSearchControllerBase extends ControllerBase {
       }
       val offset = (page - 1) * Display_num
       target.toLowerCase match {
-        // case "issues" | "wiki" => // TODO
         case "issues" => {
           searchIssuesByFess(userName, query, settings, offset, Display_num) match {
             case Right(result) => html.issues(result, page, isAdmin)
+            case Left(message) => html.error(query, message, isAdmin)
+          }
+        }
+        case "wiki" => {
+          searchWikiByFess(userName, query, settings, offset, Display_num) match {
+            case Right(result) => html.wiki(result, page, isAdmin)
             case Left(message) => html.error(query, message, isAdmin)
           }
         }
