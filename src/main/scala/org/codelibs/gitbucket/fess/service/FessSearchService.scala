@@ -1,22 +1,21 @@
 package org.codelibs.gitbucket.fess.service
 
-import java.net.URL
-import java.net.URLEncoder
+import java.net.{URL, URLEncoder}
+import java.util.Date
 
 import gitbucket.core.model.{Issue, Session}
-import gitbucket.core.service.RepositorySearchService.IssueSearchResult
 import gitbucket.core.service.{IssuesService, WikiService}
-import org.json4s._
-import org.json4s.jackson.JsonMethods._
-
-import scala.io.Source._
-import gitbucket.core.util._
-import gitbucket.core.util.JGitUtil._
 import gitbucket.core.util.ControlUtil._
 import gitbucket.core.util.Directory._
+import gitbucket.core.util.JGitUtil._
+import gitbucket.core.util._
 import org.codelibs.gitbucket.fess.service.FessSettingsService.FessSettings
 import org.eclipse.jgit.api.Git
+import org.json4s._
+import org.json4s.jackson.JsonMethods._
 import org.slf4j.LoggerFactory
+
+import scala.io.Source._
 
 trait FessSearchService { self: IssuesService with WikiService =>
   import gitbucket.core.service.RepositorySearchService._
@@ -27,16 +26,20 @@ trait FessSearchService { self: IssuesService with WikiService =>
   val IssueLabel  = "gitbucket_issue"
   val WikiLabel   = "gitbucket_wiki"
 
-  def searchByFess(user: String,
-                   query: String,
-                   setting: FessSettings,
-                   offset: Int,
-                   num: Int,
-                   label: String) = {
+  // Get Search Results from Fess
+  def accessFess(user: Option[String],
+                 query: String,
+                 setting: FessSettings,
+                 offset: Int,
+                 num: Int,
+                 label: String) = {
     val encodedQuery = URLEncoder.encode(query, "UTF-8")
     val encodedLabel = URLEncoder.encode("label:" + label, "UTF-8")
+    val permissionParam = {
+      user.map(s => "&permission=1" + s).getOrElse("")
+    }
     val urlStr =
-      s"${setting.fessUrl}/json/?q=$encodedQuery&start=$offset&num=$num&ex_q=$encodedLabel&permission=1$user"
+      s"${setting.fessUrl}/json/?q=$encodedQuery&start=$offset&num=$num&ex_q=$encodedLabel$permissionParam"
     val conn = new URL(urlStr).openConnection
     setting.fessToken.foreach(token =>
       conn.addRequestProperty("Authorization", "Bearer " + token))
@@ -44,167 +47,78 @@ trait FessSearchService { self: IssuesService with WikiService =>
     fromInputStream(conn.getInputStream).mkString
   }
 
-  def searchFilesByFess(user: String,
-                        query: String,
-                        setting: FessSettings,
-                        offset: Int,
-                        num: Int): Either[String, FessSearchResult] = {
+  def execSearch(
+      user: Option[String],
+      query: String,
+      setting: FessSettings,
+      offset: Int,
+      num: Int,
+      label: String): Either[String, (FessSearchInfo, List[FessRawResult])] = {
     implicit val formats = DefaultFormats
     try {
       val response =
-        searchByFess(user, query, setting, offset, num, SourceLabel)
+        accessFess(user, query, setting, offset, num, label)
       val fessJsonResponse =
         (parse(response) \ "response").extract[FessRawResponse]
-
-      val fileList = fessJsonResponse.result.map(result => {
-        val (owner, repo, branch, path) = getRepositoryDataFromURL(result.url)
-        val content =
-          getContent(owner, repo, branch, path).getOrElse("")
-        val (highlightText, highlightLineNumber) =
-          getHighlightText(content, query)
-        FessFileInfo(owner,
-                     repo,
-                     result.url,
-                     result.title,
-                     highlightText,
-                     highlightLineNumber)
-      })
       Right(
-        FessSearchResult(query,
-                         offset,
-                         fessJsonResponse.record_count,
-                         fileList))
+        (FessSearchInfo(query, offset, fessJsonResponse.record_count),
+         fessJsonResponse.result))
     } catch {
-      case e: org.eclipse.jgit.errors.RepositoryNotFoundException => {
+      case e: org.eclipse.jgit.errors.RepositoryNotFoundException =>
         logger.info(e.getMessage, e)
         Left(e.getMessage)
-      }
-      case e: java.net.UnknownHostException => {
+      case e: java.net.UnknownHostException =>
         logger.info(e.getMessage, e)
         Left(s"Failed to connect to ${setting.fessUrl}")
-      }
-      case e: Throwable => {
+      case e: Throwable =>
         logger.info(e.getMessage, e)
         Left(e.getMessage)
-      }
     }
   }
 
-  def getIssueWithComments(
-      owner: String,
-      repo: String,
-      issueId: String,
-      query: String)(implicit session: Session): (Issue, Int, String) = {
-    // TODO: Error Handling
-    val issue = getIssue(owner, repo, issueId).get
-    val comments = issue.content.getOrElse("") :: getComments(
-        owner,
-        repo,
-        issueId.toInt).map(_.content)
-    val matched = comments.find(_.contains(query)).getOrElse(comments.head)
-    (issue, comments.length, matched)
-  }
-
-  def searchIssuesByFess(user: String,
-                         query: String,
-                         setting: FessSettings,
-                         offset: Int,
-                         num: Int)(
-      implicit session: Session): Either[String, FessIssueSearchResult] = {
-    implicit val formats = DefaultFormats
+  // Utils
+  def getRepositoryDataFromURL(
+      url: String): Option[(String, String, String, String)] =
     try {
-      val response =
-        searchByFess(user, query, setting, offset, num, IssueLabel)
-      val fessJsonResponse =
-        (parse(response) \ "response").extract[FessRawResponse]
-
-      val issueList = fessJsonResponse.result.map(result => {
-        val (owner, repo, issueId) = getIssueDataFromURL(result.url)
-        val (issue, commentCount, content) =
-          getIssueWithComments(owner, repo, issueId, query)
-        val issueInfo = IssueSearchResult(issue.issueId,
-                                          issue.isPullRequest,
-                                          issue.title,
-                                          issue.openedUserName,
-                                          issue.registeredDate,
-                                          commentCount,
-                                          getHighlightText(content, query)._1)
-        (owner, repo, issueInfo)
-      })
-      Right(
-        FessIssueSearchResult(query,
-                              offset,
-                              fessJsonResponse.record_count,
-                              issueList))
+      val Pattern =
+        ".*/([a-zA-Z0-9-_.]+)/([a-zA-Z0-9-_.]+)/blob/([a-zA-Z0-9-_.]+)/(.*)".r
+      val Pattern(owner, repo, revStr, path) = url
+      Some(owner, repo, revStr, path)
     } catch {
-      case e: org.eclipse.jgit.errors.RepositoryNotFoundException => {
+      case e: Throwable =>
         logger.info(e.getMessage, e)
-        Left(e.getMessage)
-      }
-      case e: java.net.UnknownHostException => {
-        logger.info(e.getMessage, e)
-        Left(s"Failed to connect to ${setting.fessUrl}")
-      }
-      case e: Throwable => {
-        logger.info(e.getMessage, e)
-        Left(e.getMessage)
-      }
+        None
     }
-  }
 
-  def searchWikiByFess(user: String,
-                       query: String,
-                       setting: FessSettings,
-                       offset: Int,
-                       num: Int)(
-      implicit session: Session): Either[String, FessWikiSearchResult] = {
-    implicit val formats = DefaultFormats
+  def getIssueDataFromURL(url: String): Option[(String, String, String)] =
     try {
-      val response =
-        searchByFess(user, query, setting, offset, num, WikiLabel)
-
-      val fessJsonResponse =
-        (parse(response) \ "response").extract[FessRawResponse]
-
-      val wikiList = fessJsonResponse.result.flatMap(result => {
-        val (owner, repo, filename) = getWikiDataFromURL(result.url)
-        logger.info("HOGE: " + filename)
-        getWikiPage(owner, repo, filename).map(wikiInfo => {
-          val (highlightText, highlightLineNumber) =
-            getHighlightText(wikiInfo.content, query)
-          FessWikiInfo(owner,
-                       repo,
-                       result.url,
-                       filename,
-                       highlightText,
-                       highlightLineNumber)
-        })
-      })
-      Right(
-        FessWikiSearchResult(query,
-                             offset,
-                             fessJsonResponse.record_count,
-                             wikiList))
+      val Pattern =
+        ".*/([a-zA-Z0-9-_.]+)/([a-zA-Z0-9-_.]+)/issues/([0-9]+)/?".r
+      val Pattern(owner, repo, issueId) = url
+      Some((owner, repo, issueId))
     } catch {
-      case e: org.eclipse.jgit.errors.RepositoryNotFoundException => {
+      case e: Throwable =>
         logger.info(e.getMessage, e)
-        Left(e.getMessage)
-      }
-      case e: java.net.UnknownHostException => {
-        logger.info(e.getMessage, e)
-        Left(s"Failed to connect to ${setting.fessUrl}")
-      }
-      case e: Throwable => {
-        logger.info(e.getMessage, e)
-        Left(e.getMessage)
-      }
+        None
     }
-  }
 
-  def getContent(owner: String,
-                 repo: String,
-                 revStr: String,
-                 path: String): Option[String] =
+  def getWikiDataFromURL(url: String): Option[(String, String, String)] =
+    try {
+      val Pattern =
+        ".*/([a-zA-Z0-9-_.]+)/([a-zA-Z0-9-_.]+)/wiki/(.*)".r
+      val Pattern(owner, repo, filename) = url
+      Some((owner, repo, java.net.URLDecoder.decode(filename, "UTF-8")))
+    } catch {
+      case e: Throwable =>
+        logger.info(e.getMessage, e)
+        None
+    }
+
+  // For Code Search
+  def getFileContent(owner: String,
+                     repo: String,
+                     revStr: String,
+                     path: String): Option[String] =
     using(Git.open(getRepositoryDir(owner, repo))) { git =>
       val revCommit =
         JGitUtil.getRevCommitFromId(git, git.getRepository.resolve(revStr))
@@ -212,56 +126,150 @@ trait FessSearchService { self: IssuesService with WikiService =>
         new String(x))
     }
 
-  def getRepositoryDataFromURL(url: String): (String, String, String, String) = {
-    val Pattern =
-      ".*/([a-zA-Z0-9-_.]+)/([a-zA-Z0-9-_.]+)/blob/([a-zA-Z0-9-_.]+)/(.*)".r
-    val Pattern(owner, repo, revStr, path) = url
-    (owner, repo, revStr, path)
-  }
-  def getIssueDataFromURL(url: String): (String, String, String) = {
-    val Pattern =
-      ".*/([a-zA-Z0-9-_.]+)/([a-zA-Z0-9-_.]+)/issues/([0-9]+)/?".r
-    val Pattern(owner, repo, issueId) = url
-    (owner, repo, issueId)
-  }
+  def getCodeContents(query: String,
+                      results: List[FessRawResult]): List[FessCodeInfo] =
+    results.flatMap(result => {
+      getRepositoryDataFromURL(result.url).map({
+        case (owner, repo, branch, path) =>
+          val content =
+            getFileContent(owner, repo, branch, path).getOrElse("")
+          val (highlightText, highlightLineNumber) =
+            getHighlightText(content, query)
+          FessCodeInfo(owner,
+                       repo,
+                       result.url,
+                       result.title,
+                       highlightText,
+                       highlightLineNumber)
+      })
+    })
 
-  def getWikiDataFromURL(url: String): (String, String, String) = {
-    val Pattern =
-      ".*/([a-zA-Z0-9-_.]+)/([a-zA-Z0-9-_.]+)/wiki/(.*)".r
-    val Pattern(owner, repo, filename) = url
-    (owner, repo, java.net.URLDecoder.decode(filename, "UTF-8"))
-  }
+  // For Issue Search
+  def getIssueWithComments(
+      owner: String,
+      repo: String,
+      issueId: String,
+      query: String)(implicit session: Session): Option[(Issue, Int, String)] =
+    getIssue(owner, repo, issueId).map(issue => {
+      val comments = issue.content.getOrElse("") :: getComments(
+          owner,
+          repo,
+          issueId.toInt).map(_.content)
+      val matched = comments.find(_.contains(query)).getOrElse(comments.head)
+      (issue, comments.length, matched)
+    })
+
+  def getIssueContents(query: String, results: List[FessRawResult])(
+      implicit session: Session): List[FessIssueInfo] =
+    results.flatMap(result => {
+      getIssueDataFromURL(result.url).flatMap({
+        case (owner, repo, issueId) =>
+          getIssueWithComments(owner, repo, issueId, query).map({
+            case (issue, count, content) =>
+              FessIssueInfo(owner,
+                            repo,
+                            issue.issueId,
+                            issue.isPullRequest,
+                            issue.title,
+                            issue.openedUserName,
+                            issue.registeredDate,
+                            count,
+                            getHighlightText(content, query)._1)
+          })
+      })
+    })
+
+  // For Wiki Search
+  def getWikiContents(query: String,
+                      results: List[FessRawResult]): List[FessWikiInfo] =
+    results.flatMap(result => {
+      getWikiDataFromURL(result.url).flatMap({
+        case (owner, repo, filename) =>
+          logger.info("Wiki File: " + filename)
+          getWikiPage(owner, repo, filename).map(wikiInfo => {
+            val (content, lineNum) = getHighlightText(wikiInfo.content, query)
+            FessWikiInfo(owner, repo, result.url, filename, content, lineNum)
+          })
+      })
+    })
+
+  // Used from FessSearchController
+  def searchCodeOnFess(
+      user: Option[String],
+      query: String,
+      setting: FessSettings,
+      offset: Int,
+      num: Int): Either[String, (FessSearchInfo, List[FessCodeInfo])] =
+    try {
+      execSearch(user, query, setting, offset, num, SourceLabel).right.map({
+        case (info, res) => (info, getCodeContents(query, res))
+      })
+    } catch {
+      case e: Throwable =>
+        logger.info(e.getMessage, e)
+        Left(e.getMessage)
+    }
+
+  def searchIssueOnFess(user: Option[String],
+                        query: String,
+                        setting: FessSettings,
+                        offset: Int,
+                        num: Int)(implicit session: Session)
+    : Either[String, (FessSearchInfo, List[FessIssueInfo])] =
+    try {
+      execSearch(user, query, setting, offset, num, IssueLabel).right.map({
+        case (info, res) => (info, getIssueContents(query, res))
+      })
+    } catch {
+      case e: Throwable =>
+        logger.info(e.getMessage, e)
+        Left(e.getMessage)
+    }
+
+  def searchWikiOnFess(
+      user: Option[String],
+      query: String,
+      setting: FessSettings,
+      offset: Int,
+      num: Int): Either[String, (FessSearchInfo, List[FessWikiInfo])] =
+    try {
+      execSearch(user, query, setting, offset, num, WikiLabel).right.map({
+        case (info, res) => (info, getWikiContents(query, res))
+      })
+    } catch {
+      case e: Throwable =>
+        logger.info(e.getMessage, e)
+        Left(e.getMessage)
+    }
 }
 
-case class FessSearchResult(query: String,
-                            offset: Int,
-                            hit_count: Int,
-                            file_list: List[FessFileInfo])
-
-case class FessIssueSearchResult(
-    query: String,
-    offset: Int,
-    hit_count: Int,
-    issue_list: List[(String, String, IssueSearchResult)])
-
-case class FessWikiSearchResult(query: String,
-                                offset: Int,
-                                hit_count: Int,
-                                wiki_list: List[FessWikiInfo])
-
-case class FessFileInfo(owner: String,
+sealed trait FessContentInfo
+case class FessCodeInfo(owner: String,
                         repo: String,
                         url: String,
                         title: String,
                         digest: String,
                         highlight_line_number: Int)
-
+    extends FessContentInfo
+case class FessIssueInfo(owner: String,
+                         repo: String,
+                         issue_id: Int,
+                         isPullRequest: Boolean,
+                         title: String,
+                         openedUserName: String,
+                         registered_date: Date,
+                         comment_count: Int,
+                         highlighted_text: String)
+    extends FessContentInfo
 case class FessWikiInfo(owner: String,
                         repo: String,
                         url: String,
                         title: String,
                         digest: String,
                         highlight_line_number: Int)
+    extends FessContentInfo
+
+case class FessSearchInfo(query: String, offset: Int, hit_count: Int)
 
 case class FessRawResult(url: String, title: String)
 

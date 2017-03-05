@@ -1,17 +1,17 @@
-@import org.codelibs.gitbucket.fess.service.FessSearchResult
-@(result: FessSearchResult, page: Int, isAdmin: Boolean)(implicit context: gitbucket.core.controller.Context)
+@import org.codelibs.gitbucket.fess.service.FessCodeInfo
+@(query: String, offset: Int, hit_count: Int, code_list: List[FessCodeInfo], page: Int, isAdmin: Boolean)(implicit context: gitbucket.core.controller.Context)
 @import gitbucket.core.view.helpers
 @import gitbucket.core.service.RepositorySearchService
 @gitbucket.core.html.main("Search Results", None){
     @org.codelibs.gitbucket.fess.html.sidebar("search", isAdmin) {
-        @org.codelibs.gitbucket.fess.html.menu("code", if(result.query.isEmpty) 0 else result.hit_count, 0, 0, result.query){
-            @if(!result.query.isEmpty){
-                @if(result.file_list.isEmpty){
-                    <h4>We couldn't find any code matching '@result.query'</h4>
+        @org.codelibs.gitbucket.fess.html.menu("code", if(query.isEmpty) 0 else hit_count, 0, 0, query){
+            @if(!query.isEmpty){
+                @if(code_list.isEmpty){
+                    <h4>We couldn't find any code matching '@query'</h4>
                 } else {
-                    <h4>We've found @result.hit_count code @helpers.plural(result.hit_count, "result")</h4>
+                    <h4>We've found @hit_count code @helpers.plural(hit_count, "result")</h4>
                 }
-                @result.file_list.map { file =>
+                @code_list.map { file=>
                     <div>
                         <h5>
                             <a href=@{s"${context.path}/${file.owner}/${file.repo}"}>@file.owner/@file.repo</a>
@@ -27,9 +27,9 @@
             <div align="right">
                 <h6>Powered by <a href="http://fess.codelibs.org/"><img src="@context.path/plugin-assets/fess/assets/fess.png" alt="Fess" style="height: 24px; display: inline;"></a></h6>
             </div>
-            @if(!result.query.isEmpty){
-                @gitbucket.core.helper.html.paginator(page, result.hit_count, RepositorySearchService.CodeLimit, 10,
-                    s"${context.path}/fess?q=${helpers.urlEncode(result.query)}&type=code")
+            @if(!query.isEmpty){
+                @gitbucket.core.helper.html.paginator(page, hit_count, RepositorySearchService.CodeLimit, 10,
+                    s"${context.path}/fess?q=${helpers.urlEncode(query)}&type=code")
             }
         }
     }
