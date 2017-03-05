@@ -1,12 +1,22 @@
 gitbucket-fess-plugin
 ==
 
-This is a [GitBucket](https://github.com/gitbucket/gitbucket) plug-in that provides **search functionality across multiple repositories**.
-This search is performed **faster than** GitBucket's default search, since [Fess](https://github.com/codelibs/fess) is used as a backend search engine.
+[gitbucket-fess-plugin](https://github.com/codelibs/gitbucket-fess-plugin) is a [GitBucket](https://github.com/gitbucket/gitbucket) plugin that provides **global search functionality**.
+In other words, users can explore contents across **multiple repositories** on GitBucket.
 
-* [Blog post in Japanese](http://qiita.com/kw_udon/items/06d385b88dafed4bd609)
+This plugin enables you to search for:
+* Contents of public repositories and private repositories you can access
+* Issues and pull requests
+* Wiki pages
+
+As a backend search engine, this plugin uses [Fess](https://github.com/codelibs/fess), which is an open source full-text search server powered by [Elasticsearch](https://www.elastic.co/products/elasticsearch).
+* Search contents quickly
+* Able to index/search documents in 30+ languages
 
 ![ScreenShot](images/demo.png)
+
+**Link**
+* [Japanese documentation](http://qiita.com/kw_udon/items/06d385b88dafed4bd609)
 
 # Requirement
 * **GitBucket**: 4.6 or later
@@ -80,9 +90,11 @@ Then, you will find the job created in Step 3 on the top of the list.
 Choose and start it.
 ![Start a crawler](images/step4-1.png)
 
+If a crawler starts successfully, status of the job scheduler becomes *Running* like the following:
+![Crawler is running](images/step4-2.png)
+
 Crawling process takes time, depending on the amount of contents in GitBucket.
 After the crawling job finishes, you can search GitBucket's contents on Fess.
-![Crawler is running](images/step4-2.png)
 
 ### Step 5. **[GitBucket]** Register information about Fess
 This is the final step.
