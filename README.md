@@ -6,7 +6,7 @@ This search is performed **faster than** GitBucket's default search, since [Fess
 
 * [Blog post in Japanese](http://qiita.com/kw_udon/items/06d385b88dafed4bd609)
 
-![ScreenShot](screenshot.png)
+![ScreenShot](images/demo.png)
 
 # Requirement
 * **GitBucket**: 4.6 or later
