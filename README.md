@@ -10,8 +10,9 @@ This plugin enables you to search for:
 * Wiki pages
 
 As a backend search engine, this plugin uses [Fess](https://github.com/codelibs/fess), which is an open source full-text search server powered by [Elasticsearch](https://www.elastic.co/products/elasticsearch).
-* Search contents quickly
-* Able to index/search documents in 30+ languages
+Thus, it can
+* search contents quickly
+* index/search documents in 30+ languages
 
 ![ScreenShot](images/demo.png)
 
@@ -105,6 +106,9 @@ This token is used to search for contents in private repositories.
 
 Then, GitBucket users can use the search functionality powered by Fess!
 
+## Setting Up a Regular Crawler
+By using [job schedulers](http://fess.codelibs.org/11.0/admin/scheduler-guide.html) on Fess, you can run data crawlers periodically like cron.
+
 # Development Information
 
 ## Build
@@ -117,4 +121,5 @@ $ ./sbt.sh scalafmt
 ```
 
 # Contribution
-Any contribution is welcome!
+Any contribution will be appreciated!
+Please send [issues](https://github.com/codelibs/gitbucket-fess-plugin/issues) or [pull requests](https://github.com/codelibs/gitbucket-fess-plugin/pulls).
