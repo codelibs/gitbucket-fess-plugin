@@ -47,9 +47,9 @@ trait FessSearchControllerBase extends ControllerBase {
     val userName = context.loginAccount.map(_.userName)
     val isAdmin  = context.loginAccount.exists(_.isAdmin)
     val settings = loadFessSettings()
-    if (!settings.fessUrl.isEmpty) { // Already set up
-      val query  = params.getOrElse("q", "")
-      val target = params.getOrElse("type", "code")
+    val query  = params.getOrElse("q", "")
+    val target = params.getOrElse("type", "code").toLowerCase
+    if (!settings.fessUrl.isEmpty) { // Setup completed
       val page = try {
         val i = params.getOrElse("page", "1").toInt
         if (i <= 0) 1 else i
@@ -58,12 +58,17 @@ trait FessSearchControllerBase extends ControllerBase {
       }
       val offset = (page - 1) * Display_num
 
-      target.toLowerCase match {
+      target match {
         case "issues" =>
           searchIssueOnFess(userName, query, settings, offset, Display_num) match {
             case Right((r, issues)) =>
-              html.issues(r.query, r.offset, r.hit_count, issues, page, isAdmin)
-            case Left(message) => html.error(query, message, isAdmin)
+              html.issues(r.query,
+                          r.offset,
+                          r.hit_count,
+                          issues,
+                          page,
+                          isAdmin)
+            case Left(message) => html.error(target, query, message, isAdmin, true)
           }
         case "wiki" =>
           searchWikiOnFess(userName, query, settings, offset, Display_num) match {
@@ -74,24 +79,21 @@ trait FessSearchControllerBase extends ControllerBase {
                         contents,
                         page,
                         isAdmin)
-            case Left(message) => html.error(query, message, isAdmin)
+            case Left(message) => html.error(target, query, message, isAdmin, true)
           }
         case _ => // "code"
           searchCodeOnFess(userName, query, settings, offset, Display_num) match {
             case Right((r, codes)) =>
               html.code(r.query, r.offset, r.hit_count, codes, page, isAdmin)
-            case Left(message) => html.error(query, message, isAdmin)
+            case Left(message) => html.error(target, query, message, isAdmin, true)
           }
       }
 
-    } else { // Not yet
+    } else { // Setup is incomplete
       if (isAdmin) {
         redirect("/fess/settings")
       } else {
-        html.error(
-          "",
-          "Settings for Fess are not finished yet. Please contact the administrator.",
-          isAdmin)
+        html.error(target, query, "", isAdmin, false)
       }
     }
   }

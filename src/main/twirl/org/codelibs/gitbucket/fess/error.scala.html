@@ -1,8 +1,17 @@
-@(query: String, message: String, isAdmin: Boolean)(implicit context: gitbucket.core.controller.Context)
+@(target: String, query: String, message: String, isAdmin: Boolean, setup: Boolean)(implicit context: gitbucket.core.controller.Context)
 @gitbucket.core.html.main("Search Results", None){
     @org.codelibs.gitbucket.fess.html.sidebar("search", isAdmin) {
-        @org.codelibs.gitbucket.fess.html.menu("code", 0, 0, 0, query){
-            <h4>@message</h4>
+        @org.codelibs.gitbucket.fess.html.menu(target, 0, 0, 0, query){
+            @if(setup){
+                <h4>@message</h4>
+            } else {
+                <p style="font-size: 22px">
+                    Setup needs to be completed.<br>
+                    If you are the administrator,
+                    please install <a href="https://github.com/codelibs/fess">Fess</a> and
+                    follow the <a href="https://github.com/codelibs/gitbucket-fess-plugin#getting-started">instructions</a>.
+                </p>
+            }
         }
     }
 }
