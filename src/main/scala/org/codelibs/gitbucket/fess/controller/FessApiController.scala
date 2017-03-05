@@ -80,7 +80,8 @@ trait FessApiControllerBase extends ControllerBase {
     contentType = "application/vnd.github.v3.raw"
     params
       .get("path")
-      .flatMap(path => getFileContent(owner, repo, path))
+      .flatMap(path =>
+        getFileContent(owner, repo, java.net.URLDecoder.decode(path, "UTF-8")))
       .getOrElse(Array.empty)
   }))
 }

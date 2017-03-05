@@ -62,7 +62,7 @@ trait FessSearchControllerBase extends ControllerBase {
         case "issues" =>
           searchIssueOnFess(userName, query, settings, offset, Display_num) match {
             case Right((r, issues)) =>
-              html.issues(r.query, r.offset, r.offset, issues, page, isAdmin)
+              html.issues(r.query, r.offset, r.hit_count, issues, page, isAdmin)
             case Left(message) => html.error(query, message, isAdmin)
           }
         case "wiki" =>

@@ -14,12 +14,16 @@
                 @issue_list.map { issue =>
                     <div class="block">
                         <div class="pull-right muted">#@issue.issue_id</div>
-                        <h4 style="margin-top: 0px;"><a href="@context.path/@issue.owner/@issue.repo/@if(issue.isPullRequest){pull} else {issues}/@issue.issue_id">@issue.title</a></h4>
+                        <h4 style="margin-top: 0px;">
+                            <a href=@{s"${context.path}/${issue.owner}/${issue.repo}"}>@issue.owner/@issue.repo</a>
+                                &#8211;
+                            <a href="@context.path/@issue.owner/@issue.repo/@if(issue.isPullRequest){pull} else {issues}/@issue.issue_id">@issue.title</a>
+                        </h4>
                         @if(issue.highlighted_text.nonEmpty){
                             <pre>@Html(issue.highlighted_text)</pre>
                         }
                         <div class="small muted">
-                            <Opene></Opene>d by <a href="@helpers.url(issue.openedUserName)" class="username">@issue.openedUserName</a>
+                            Opened by <a href="@helpers.url(issue.openedUserName)" class="username">@issue.openedUserName</a>
                             @gitbucket.core.helper.html.datetimeago(issue.registered_date)
                             @if(issue.comment_count > 0){
                                     &nbsp;&nbsp;<i class="octicon octicon-comment"></i>
