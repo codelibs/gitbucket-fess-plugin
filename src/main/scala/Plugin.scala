@@ -20,7 +20,7 @@ class Plugin extends gitbucket.core.plugin.Plugin {
   )
 
   override val globalMenus = Seq(
-    (context: Context) => Some(Link("search", "Search", "fess?q="))
+    (context: Context) => Some(Link("fess", "Global Search", "fess?q="))
   )
 
   override val assetsMappings = Seq("/fess/assets" -> "/fess/assets")
