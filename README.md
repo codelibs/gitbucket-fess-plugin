@@ -10,7 +10,7 @@ This plugin enables you to search for:
 * Wiki pages
 
 As a backend search engine, this plugin uses [Fess](https://github.com/codelibs/fess), which is an open source full-text search server powered by [Elasticsearch](https://www.elastic.co/products/elasticsearch).
-Thus, it can
+It can
 * search contents quickly
 * index/search documents in 30+ languages
 
@@ -94,7 +94,7 @@ Choose and start it.
 If a crawler starts successfully, status of the job scheduler becomes *Running* like the following:
 ![Crawler is running](images/step4-2.png)
 
-Crawling process takes time, depending on the amount of contents in GitBucket.
+Crawling process takes time, depending on a number of contents in GitBucket.
 After the crawling job finishes, you can search GitBucket's contents on Fess.
 
 ### Step 5. **[GitBucket]** Register information about Fess
