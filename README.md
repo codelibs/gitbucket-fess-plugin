@@ -54,6 +54,7 @@ $ ./bin/fess -Dfess.port=8081 -Dfess.context.path=/fess/
 ### Step 2. **[GitBucket]** Generate an access token for Fess's crawler
 Access `http://[GitBucket URL]/[User Name]/_application` as a GitBucket's admin user and generate an access token.
 This token will be used by crawlers of Fess.
+![Generate GitBucket's token](images/step2.png)
 
 ### Step 3. **[Fess]** Set up a crawler for GitBucket repositories
 Access `http://[Fess URL]/admin/dataconfig/` as a Fess's admin user and create a [data store crawling configuration](http://fess.codelibs.org/11.0/admin/dataconfig-guide.html).
@@ -66,25 +67,29 @@ Then, fill each form as below:
 url=http://[GitBucket URL]
 token=[Access Token generated in Step 2]
 ```
-('[' and ']' are not included)
 You don't have to change other values.
+![GitBucketDataStore config](images/step3-1.png)
 
 After you create a configuration successfully, you can find it in `http://[Fess URL]/admin/dataconfig/`.
 Then, click it and create a new crawling job.
+![Create a new job](images/step3-2.png)
 
 ### Step 4. **[Fess]** Run the crawler
 Move to `http://[Fess URL]/admin/scheduler/`.
 Then, you will find the job created in Step 3 on the top of the list.
 Choose and start it.
+![Start a crawler](images/step4-1.png)
 
 Crawling process takes time, depending on the amount of contents in GitBucket.
 After the crawling job finishes, you can search GitBucket's contents on Fess.
+![Crawler is running](images/step4-2.png)
 
 ### Step 5. **[GitBucket]** Register information about Fess
 This is the final step.
 Access `http://[GitBucket URL]/fess/` as an admin user and register the Fess URL.
 In this page, you can also register a [Fess's access token](http://fess.codelibs.org/11.0/admin/accesstoken-guide.html).
 This token is used to search for contents in private repositories.
+![Register a token](images/step5.png)
 
 Then, GitBucket users can use the search functionality powered by Fess!
 
