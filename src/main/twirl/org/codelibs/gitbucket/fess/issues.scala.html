@@ -14,7 +14,7 @@
                 @issue_list.map { issue =>
                     <div class="block">
                         <div class="pull-right muted">#@issue.issue_id</div>
-                        <h4 style="margin-top: 0px;">
+                        <h4 style="margin-top: 0;">
                             <a href=@{s"${context.path}/${issue.owner}/${issue.repo}"}>@issue.owner/@issue.repo</a>
                                 &#8211;
                             <a href="@context.path/@issue.owner/@issue.repo/@if(issue.isPullRequest){pull} else {issues}/@issue.issue_id">@issue.title</a>

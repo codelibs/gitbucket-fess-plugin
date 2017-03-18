@@ -32,7 +32,7 @@ trait FessSearchService { self: IssuesService with WikiService =>
                  setting: FessSettings,
                  offset: Int,
                  num: Int,
-                 label: String) = {
+                 label: String): String = {
     val encodedQuery = URLEncoder.encode(query, "UTF-8")
     val encodedLabel = URLEncoder.encode("label:" + label, "UTF-8")
     val permissionParam = {
@@ -121,7 +121,7 @@ trait FessSearchService { self: IssuesService with WikiService =>
     using(Git.open(getRepositoryDir(owner, repo))) { git =>
       val revCommit =
         JGitUtil.getRevCommitFromId(git, git.getRepository.resolve(revStr))
-      getContentFromPath(git, revCommit.getTree, path, false).map(x =>
+      getContentFromPath(git, revCommit.getTree, path, fetchLargeFile = false).map(x =>
         new String(x))
     }
 

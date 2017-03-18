@@ -15,14 +15,14 @@ class FessSettingsController
 trait FessSettingsControllerBase extends ControllerBase {
   self: FessSettingsService with AdminAuthenticator =>
 
-  val settingsForm = mapping(
+  val settingsForm: MappingValueType[FessSettings] = mapping(
     "fessUrl"   -> text(required, maxlength(200)),
     "fessToken" -> optional(text(length(60)))
   )(FessSettings.apply)
 
   get("/fess/settings")(adminOnly {
     val settings = loadFessSettings()
-    html.settings(settings.fessUrl, settings.fessToken.getOrElse(""), true)
+    html.settings(settings.fessUrl, settings.fessToken.getOrElse(""), isAdmin = true)
   })
 
   post("/fess/settings", settingsForm)(adminOnly { form =>

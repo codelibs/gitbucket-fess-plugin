@@ -68,7 +68,7 @@ trait FessSearchControllerBase extends ControllerBase {
                           issues,
                           page,
                           isAdmin)
-            case Left(message) => html.error(target, query, message, isAdmin, true)
+            case Left(message) => html.error(target, query, message, isAdmin, setup = true)
           }
         case "wiki" =>
           searchWikiOnFess(userName, query, settings, offset, Display_num) match {
@@ -79,13 +79,13 @@ trait FessSearchControllerBase extends ControllerBase {
                         contents,
                         page,
                         isAdmin)
-            case Left(message) => html.error(target, query, message, isAdmin, true)
+            case Left(message) => html.error(target, query, message, isAdmin, setup = true)
           }
         case _ => // "code"
           searchCodeOnFess(userName, query, settings, offset, Display_num) match {
             case Right((r, codes)) =>
               html.code(r.query, r.offset, r.hit_count, codes, page, isAdmin)
-            case Left(message) => html.error(target, query, message, isAdmin, true)
+            case Left(message) => html.error(target, query, message, isAdmin, setup = true)
           }
       }
 
@@ -93,7 +93,7 @@ trait FessSearchControllerBase extends ControllerBase {
       if (isAdmin) {
         redirect("/fess/settings")
       } else {
-        html.error(target, query, "", isAdmin, false)
+        html.error(target, query, "", isAdmin, setup = false)
       }
     }
   }
