@@ -1,20 +1,34 @@
-gitbucket-fess-plugin: Search GitBucket with Elasticsearch
+gitbucket-fess-plugin: Search All of GitBucket on Fess
 ==
 
-[gitbucket-fess-plugin](https://github.com/codelibs/gitbucket-fess-plugin) is a [GitBucket](https://github.com/gitbucket/gitbucket) plugin that provides **global search**, that is, search across multiple repositories.
+[**gitbucket-fess-plugin**](https://github.com/codelibs/gitbucket-fess-plugin) is a [**GitBucket**](https://github.com/gitbucket/gitbucket) plugin that provides **global search**, that is, search across multiple repositories.
 
-You can search for:
-* Code in all public repositories
-* Code in private repositories where you can access (See [here](#private-repository-search))
-* Issues / Pull requests
-* Wiki pages
-
-This plugin cooperates with [Fess](https://github.com/codelibs/fess), which is an open source full-text search server powered by [Elasticsearch](https://www.elastic.co/products/elasticsearch).
+Users can search for:
+* **Code** in all public repositories
+* **Code** in private repositories where you can access
+* **Issues** / **Pull requests**
+* **Wiki** pages
 
 ![ScreenShot](images/demo.png)
 
-**Link**
+This plugin cooperates with [**Fess**](https://github.com/codelibs/fess), which is a full-text search server powered by [**Elasticsearch**](https://www.elastic.co/products/elasticsearch).
+But, special knowledge is NOT required to use both Fess and this plugin.
+
+![Overview](images/overview.png)
+
+Why Fess?
+--
+* **open source** software provided under Apache license
+* **easy to deploy**
+* **powerful** search engine based on **Elasticsearch**
+* can index/search documents in **30+ languages**
+* supports **many file formats** (pdf, MS Office, etc.)
+
+
+Links
+--
 * [Japanese Documentation](http://qiita.com/kw_udon/items/06d385b88dafed4bd609)
+
 
 # Requirement
 * **GitBucket**: 4.6 or later
@@ -29,7 +43,7 @@ This plugin cooperates with [Fess](https://github.com/codelibs/fess), which is a
 | 1.0.0-beta1    | 4.6               | 10.3         | [Download](http://central.maven.org/maven2/org/codelibs/gitbucket/gitbucket-fess-plugin_2.11/1.0.0-beta1/gitbucket-fess-plugin_2.11-1.0.0-beta1.jar) |
 
 # Getting Started
-**TOC**
+
 * [Installation](#installation)
 * [Setting Up](#setting-up)
 * [Private Repository Search](#private-repository-search)
@@ -43,16 +57,17 @@ After the installation, the admin user sets up both of GitBucket and Fess.
 
 The flow of the setting is like the following:
 
-1. Prepare GitBucket and Fess
-2. **[GitBucket]** Generate an access token for Fess's crawler
-3. **[Fess]** Set up a crawler for GitBucket repositories
-4. **[Fess]** Run the crawler
-5. **[GitBucket]** Register information about Fess
+* [Step 1. Run GitBucket and Fess](#step-1-run-gitbucket-and-fess)
+* [Step 2. Generate Token for Crawler @GitBucket](#step-2-generate-token-for-crawler-gitbucket)
+* [Step 3. Set up Crawler @Fess](#step-3-set-up-crawler-fess)
+* [Step 4. Run Crawler @Fess](#step-4-run-crawler-fess)
+* [Step 5. Register Fess's URL @GitBucket](#step-5-register-fesss-url-gitbucket)
 
-### Step 1. Prepare GitBucket and Fess
+### Step 1. Run GitBucket and Fess
 Run [GitBucket](https://github.com/gitbucket/gitbucket) and [Fess](https://github.com/codelibs/fess).
 If you run the both applications on `localhost`, use different port numbers.
-####Example
+
+#### Example
 ##### GitBucket: `http://localhost:8080/gitbucket/`
 ```bash
 $ java -jar gitbucket.war --port=8080 --prefix=gitbucket
@@ -64,14 +79,14 @@ $ ./bin/fess -Dfess.port=8081 -Dfess.context.path=/fess/
 ```
 
 
-### Step 2. **[GitBucket]** Generate an access token for Fess's crawler
+### Step 2. Generate Token for Crawler @GitBucket
 Access to `http://[GitBucket URL]/[User Name]/_application` as a GitBucket's admin user and generate an access token.
 This token will be used by crawlers of Fess.
 
 ![Generate GitBucket's token](images/step2.png)
 
-### Step 3. **[Fess]** Set up a crawler for GitBucket repositories
-Access to `http://[Fess URL]/admin/dataconfig/` as a Fess's admin user and create a [data store crawling configuration](http://fess.codelibs.org/11.0/admin/dataconfig-guide.html).
+### Step 3. Set up Crawler @Fess
+Access to `http://[Fess URL]/admin/dataconfig/` as a Fess's admin user and set up a data crawler.
 
 Then, fill each form as below:
 * Name: String
@@ -79,7 +94,7 @@ Then, fill each form as below:
 * Parameter:
 ```
 url=http://[GitBucket URL]
-token=[Access Token generated in Step 2]
+token=[GitBucket's Token generated in Step 2]
 ```
 You don't have to change other values.
 
@@ -89,34 +104,34 @@ After you create a configuration successfully, you can find it in `http://[Fess 
 Then, click it and create a new crawling job.
 ![Create a new job](images/step3-2.png)
 
-### Step 4. **[Fess]** Run the crawler
+### Step 4. Run Crawler @Fess
 Move to `http://[Fess URL]/admin/scheduler/`.
 Then, you will find the job created in Step 3 on the top of the list.
 Choose and start it.
 
 ![Start a crawler](images/step4-1.png)
 
-If a crawler starts successfully, status of the job scheduler becomes *Running* like the following:
+If a crawler starts successfully, the status of the job scheduler becomes *Running* like the following:
 
 ![Crawler is running](images/step4-2.png)
 
 Crawling process takes time, depending on a number of contents in GitBucket.
 After the crawling job finishes, you can search GitBucket's contents on Fess.
 
-### Step 5. **[GitBucket]** Register information about Fess
+### Step 5. Register Fess's URL @GitBucket
 This is the final step.
 Access to `http://[GitBucket URL]/fess/settings` as an admin user and register the Fess URL.
 
-In this page, you can also register a [Fess's access token](http://fess.codelibs.org/11.0/admin/accesstoken-guide.html).
-This token is required for private repository search, but you can leave it empty now.
-We will explain how to generate a token in [the next section](#private-repository-search).
+You can also register a [Fess's access token](http://fess.codelibs.org/11.0/admin/accesstoken-guide.html) here.
+It is required for private repository search, but you can leave this form empty now.
+For more details, see [the next section](#private-repository-search).
 
 ![Register a token](images/step5.png)
 
-Then, GitBucket users can use the search functionality powered by Fess!
+Then, global search will be enabled!
 
 ## Private Repository Search
-If the admin user register a [Fess's access token](http://fess.codelibs.org/11.0/admin/accesstoken-guide.html) at `http://[GitBucket URL]/fess/settings`,
+If the admin user registers a [Fess's access token](http://fess.codelibs.org/11.0/admin/accesstoken-guide.html) at `http://[GitBucket URL]/fess/settings`,
 users can explore their private repositories.
 
 **How to generate Fess's access token**
