@@ -41,8 +41,7 @@ trait FessSearchService { self: IssuesService with WikiService =>
     val urlStr =
       s"${setting.fessUrl}/json/?q=$encodedQuery&start=$offset&num=$num&ex_q=$encodedLabel$permissionParam"
     val conn = new URL(urlStr).openConnection
-    setting.fessToken.foreach(token =>
-      conn.addRequestProperty("Authorization", "Bearer " + token))
+    setting.fessToken.foreach(token => conn.addRequestProperty("Authorization", token))
 
     fromInputStream(conn.getInputStream).mkString
   }
