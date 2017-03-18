@@ -102,7 +102,12 @@ You don't have to change other values.
 
 After you create a configuration successfully, you can find it in `http://[Fess URL]/admin/dataconfig/`.
 Then, click it and create a new crawling job.
+
 ![Create a new job](images/step3-2.png)
+
+You can set up a crawling schedule here, but you can also change it later.
+Thus, if you are new to Fess,　you don't need to change any value here.
+(For more details about scheduling, see [a later section](#continuous-crawl).)
 
 ### Step 4. Run Crawler @Fess
 Move to `http://[Fess URL]/admin/scheduler/`.
@@ -152,7 +157,11 @@ Then, access token will be created.
 
 
 ## Continuous Crawl
-By using [job schedulers](http://fess.codelibs.org/11.0/admin/scheduler-guide.html) on Fess, you can run data crawlers periodically like cron.
+By setting up [job schedulers](http://fess.codelibs.org/11.0/admin/scheduler-guide.html) on Fess,
+you can run data crawlers periodically to keep search results up to date.
+
+Access to `http://[FessURL]/admin/scheduler/` and choose a crawler job.
+Then, you can setting up the value of `Schedule` in [Cron-format](https://en.wikipedia.org/wiki/Cron).
 
 # Development Information
 
