@@ -29,17 +29,11 @@ Links
 --
 * [Japanese Documentation](http://qiita.com/kw_udon/items/06d385b88dafed4bd609)
 
-
-# Requirement
-* **GitBucket**: 4.6 or later
-* **Fess**: 10.3 or later
-
 # Release
 
 | Plugin version | GitBucket version | Fess version | jar File                                                                                                                                             |
 |:--------------:|:-----------------:|:------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------:|
-| master         | 4.10              | 11.0.1       | Build from source                                                                                                                                    |
-| 1.0.0          | 4.10              | 11.0.1       | [Download](http://central.maven.org/maven2/org/codelibs/gitbucket/gitbucket-fess-plugin_2.12/1.0.0/gitbucket-fess-plugin_2.12-1.0.0.jar) |
+| 1.0.0          | 4.10              | 11.0.1       | [Download](http://central.maven.org/maven2/org/codelibs/gitbucket/gitbucket-fess-plugin_2.12/1.0.0/gitbucket-fess-plugin_2.12-1.0.0.jar)             |
 | 1.0.0-beta2    | 4.7               | 10.3         | [Download](http://central.maven.org/maven2/org/codelibs/gitbucket/gitbucket-fess-plugin_2.11/1.0.0-beta2/gitbucket-fess-plugin_2.11-1.0.0-beta2.jar) |
 | 1.0.0-beta1    | 4.6               | 10.3         | [Download](http://central.maven.org/maven2/org/codelibs/gitbucket/gitbucket-fess-plugin_2.11/1.0.0-beta1/gitbucket-fess-plugin_2.11-1.0.0-beta1.jar) |
 
@@ -51,7 +45,8 @@ Links
 * [Continuous Crawl](#continuous-crawl)
 
 ## Installation
-Download `gitbucket-fess-plugin` jar file and copy the file to `~/.gitbucket/plugins` (If the directory does not exist, create it by hand).
+Download `gitbucket-fess-plugin` jar file from [the release page](https://github.com/codelibs/gitbucket-fess-plugin/releases) and
+put it into `~/.gitbucket/plugins` (If the directory does not exist, create it by hand).
 
 ## Setting Up
 After the installation, the admin user sets up both of GitBucket and Fess.
