@@ -22,7 +22,9 @@ trait FessSettingsControllerBase extends ControllerBase {
 
   get("/fess/settings")(adminOnly {
     val settings = loadFessSettings()
-    html.settings(settings.fessUrl, settings.fessToken.getOrElse(""), isAdmin = true)
+    html.settings(settings.fessUrl,
+                  settings.fessToken.getOrElse(""),
+                  isAdmin = true)
   })
 
   post("/fess/settings", settingsForm)(adminOnly { form =>

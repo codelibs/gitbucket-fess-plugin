@@ -41,7 +41,8 @@ trait FessSearchService { self: IssuesService with WikiService =>
     val urlStr =
       s"${setting.fessUrl}/json/?q=$encodedQuery&start=$offset&num=$num&ex_q=$encodedLabel$permissionParam"
     val conn = new URL(urlStr).openConnection
-    setting.fessToken.foreach(token => conn.addRequestProperty("Authorization", token))
+    setting.fessToken.foreach(token =>
+      conn.addRequestProperty("Authorization", token))
 
     fromInputStream(conn.getInputStream).mkString
   }
@@ -121,8 +122,8 @@ trait FessSearchService { self: IssuesService with WikiService =>
     using(Git.open(getRepositoryDir(owner, repo))) { git =>
       val revCommit =
         JGitUtil.getRevCommitFromId(git, git.getRepository.resolve(revStr))
-      getContentFromPath(git, revCommit.getTree, path, fetchLargeFile = false).map(x =>
-        new String(x))
+      getContentFromPath(git, revCommit.getTree, path, fetchLargeFile = false)
+        .map(x => new String(x))
     }
 
   def getCodeContents(query: String,
