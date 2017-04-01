@@ -5,9 +5,9 @@ import java.util.Date
 
 import gitbucket.core.model.{Issue, Session}
 import gitbucket.core.service.{IssuesService, WikiService}
-import gitbucket.core.util.ControlUtil._
 import gitbucket.core.util.Directory._
 import gitbucket.core.util.JGitUtil._
+import gitbucket.core.util.SyntaxSugars._
 import gitbucket.core.util._
 import org.codelibs.gitbucket.fess.service.FessSettingsService.FessSettings
 import org.eclipse.jgit.api.Git

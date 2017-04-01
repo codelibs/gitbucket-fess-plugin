@@ -1,12 +1,10 @@
 package org.codelibs.gitbucket.fess.service
 
 import java.io.File
-import gitbucket.core.util.{ControlUtil, Directory}
-import Directory._
-import ControlUtil._
-import FessSettingsService._
 
-import gitbucket.core.model.{Session => _, _}
+import gitbucket.core.util.Directory._
+import gitbucket.core.util.SyntaxSugars._
+import org.codelibs.gitbucket.fess.service.FessSettingsService._
 
 trait FessSettingsService {
 
