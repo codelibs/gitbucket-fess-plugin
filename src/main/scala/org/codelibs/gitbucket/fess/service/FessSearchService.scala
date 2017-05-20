@@ -4,7 +4,7 @@ import java.net.{URL, URLEncoder}
 import java.util.Date
 
 import gitbucket.core.model.{Issue, Session}
-import gitbucket.core.service.{IssuesService, WikiService}
+import gitbucket.core.service.{AccountService, IssuesService, WikiService}
 import gitbucket.core.util.Directory._
 import gitbucket.core.util.JGitUtil._
 import gitbucket.core.util.SyntaxSugars._
@@ -17,7 +17,8 @@ import org.slf4j.LoggerFactory
 
 import scala.io.Source._
 
-trait FessSearchService { self: IssuesService with WikiService =>
+trait FessSearchService {
+  self: IssuesService with WikiService with AccountService =>
   import gitbucket.core.service.RepositorySearchService._
 
   val logger = LoggerFactory.getLogger(getClass)
@@ -32,14 +33,20 @@ trait FessSearchService { self: IssuesService with WikiService =>
                  setting: FessSettings,
                  offset: Int,
                  num: Int,
-                 label: String): String = {
+                 label: String)(implicit session: Session): String = {
     val encodedQuery = URLEncoder.encode(query, "UTF-8")
     val encodedLabel = URLEncoder.encode("label:" + label, "UTF-8")
-    val permissionParam = {
-      user.map(s => "&permission=1" + s).getOrElse("")
-    }
+    val permissionParams = {
+      user
+        .map(s => {
+          s :: getGroupsByUserName(s)
+        })
+        .getOrElse(List.empty)
+    }.map(s => "permission=1" + s).mkString("&")
+
     val urlStr =
-      s"${setting.fessUrl}/json/?q=$encodedQuery&start=$offset&num=$num&ex_q=$encodedLabel$permissionParam"
+      s"${setting.fessUrl}/json/?q=$encodedQuery&start=$offset&num=$num&ex_q=$encodedLabel&$permissionParams"
+    logger.debug("GET: " + urlStr)
     val conn = new URL(urlStr).openConnection
     setting.fessToken.foreach(token =>
       conn.addRequestProperty("Authorization", token))
@@ -47,13 +54,13 @@ trait FessSearchService { self: IssuesService with WikiService =>
     fromInputStream(conn.getInputStream).mkString
   }
 
-  def execSearch(
-      user: Option[String],
-      query: String,
-      setting: FessSettings,
-      offset: Int,
-      num: Int,
-      label: String): Either[String, (FessSearchInfo, List[FessRawResult])] = {
+  def execSearch(user: Option[String],
+                 query: String,
+                 setting: FessSettings,
+                 offset: Int,
+                 num: Int,
+                 label: String)(implicit session: Session)
+    : Either[String, (FessSearchInfo, List[FessRawResult])] = {
     implicit val formats = DefaultFormats
     try {
       val response =
@@ -185,7 +192,6 @@ trait FessSearchService { self: IssuesService with WikiService =>
     results.flatMap(result => {
       getWikiDataFromURL(result.url).flatMap({
         case (owner, repo, filename) =>
-          logger.info("Wiki File: " + filename)
           getWikiPage(owner, repo, filename).map(wikiInfo => {
             val (content, lineNum) = getHighlightText(wikiInfo.content, query)
             FessWikiInfo(owner, repo, result.url, filename, content, lineNum)
@@ -194,12 +200,12 @@ trait FessSearchService { self: IssuesService with WikiService =>
     })
 
   // Used from FessSearchController
-  def searchCodeOnFess(
-      user: Option[String],
-      query: String,
-      setting: FessSettings,
-      offset: Int,
-      num: Int): Either[String, (FessSearchInfo, List[FessCodeInfo])] =
+  def searchCodeOnFess(user: Option[String],
+                       query: String,
+                       setting: FessSettings,
+                       offset: Int,
+                       num: Int)(implicit session: Session)
+    : Either[String, (FessSearchInfo, List[FessCodeInfo])] =
     try {
       execSearch(user, query, setting, offset, num, SourceLabel).right.map({
         case (info, res) => (info, getCodeContents(query, res))
@@ -226,12 +232,12 @@ trait FessSearchService { self: IssuesService with WikiService =>
         Left(e.getMessage)
     }
 
-  def searchWikiOnFess(
-      user: Option[String],
-      query: String,
-      setting: FessSettings,
-      offset: Int,
-      num: Int): Either[String, (FessSearchInfo, List[FessWikiInfo])] =
+  def searchWikiOnFess(user: Option[String],
+                       query: String,
+                       setting: FessSettings,
+                       offset: Int,
+                       num: Int)(implicit session: Session)
+    : Either[String, (FessSearchInfo, List[FessWikiInfo])] =
     try {
       execSearch(user, query, setting, offset, num, WikiLabel).right.map({
         case (info, res) => (info, getWikiContents(query, res))
