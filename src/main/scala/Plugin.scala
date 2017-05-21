@@ -12,7 +12,7 @@ class Plugin extends gitbucket.core.plugin.Plugin {
   override val pluginName: String  = "Fess Plugin"
   override val description: String = "Search GitBucket by Fess."
   override val versions: List[Version] =
-    List(new Version("1.0.0"), new Version("1.1.0"))
+    List(new Version("1.0.0"), new Version("1.1.0"), new Version("1.1.1"))
   override val controllers = Seq(
     // Note: "/api/v3/" is a special prefix in ControllerBase.scala and Implicits.scala
     "/api/v3/fess/*" -> new FessApiController(),
