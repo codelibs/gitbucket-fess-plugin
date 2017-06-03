@@ -1,11 +1,12 @@
 import gitbucket.core.controller.Context
-import gitbucket.core.plugin.Link
+import gitbucket.core.plugin.{Link, ReceiveHook}
 import io.github.gitbucket.solidbase.model.Version
 import org.codelibs.gitbucket.fess.controller.{
   FessApiController,
   FessSearchController,
   FessSettingsController
 }
+import org.codelibs.gitbucket.fess.model.FessHook
 
 class Plugin extends gitbucket.core.plugin.Plugin {
   override val pluginId: String    = "fess"
@@ -25,4 +26,6 @@ class Plugin extends gitbucket.core.plugin.Plugin {
   )
 
   override val assetsMappings = Seq("/fess/assets" -> "/fess/assets")
+
+  override val receiveHooks: Seq[ReceiveHook] = List(FessHook)
 }

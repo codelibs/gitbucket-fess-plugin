@@ -6,7 +6,10 @@ import gitbucket.core.util._
 import gitbucket.core.controller.ControllerBase
 import gitbucket.core.service.IssuesService.IssueSearchCondition
 import gitbucket.core.util.Implicits._
-import org.codelibs.gitbucket.fess.service.FessSearchService
+import org.codelibs.gitbucket.fess.service.{
+  FessSearchService,
+  FessUpdatedDocumentService
+}
 
 class FessApiController
     extends FessApiControllerBase
