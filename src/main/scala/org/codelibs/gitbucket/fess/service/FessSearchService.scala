@@ -90,7 +90,7 @@ trait FessSearchService {
       val Pattern =
         ".*/([a-zA-Z0-9-_.]+)/([a-zA-Z0-9-_.]+)/blob/([a-zA-Z0-9-_.]+)/(.*)".r
       val Pattern(owner, repo, revStr, path) = url
-      Some(owner, repo, revStr, path)
+      Some(owner, repo, revStr, java.net.URLDecoder.decode(path, "UTF-8"))
     } catch {
       case e: Throwable =>
         logger.info(e.getMessage, e)
