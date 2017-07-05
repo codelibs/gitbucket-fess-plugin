@@ -3,10 +3,13 @@ package org.codelibs.gitbucket.fess.controller
 import gitbucket.core.api._
 import gitbucket.core.service._
 import gitbucket.core.util._
+import gitbucket.core.util.Directory._
+import gitbucket.core.util.SyntaxSugars._
 import gitbucket.core.controller.ControllerBase
 import gitbucket.core.service.IssuesService.IssueSearchCondition
 import gitbucket.core.util.Implicits._
 import org.codelibs.gitbucket.fess.service.FessSearchService
+import org.eclipse.jgit.api.Git
 
 class FessApiController
     extends FessApiControllerBase
@@ -55,9 +58,11 @@ trait FessApiControllerBase extends ControllerBase {
                          (r.owner, r.name))
             val issueCount = countFn("open", false) + countFn("closed", false)
             val pullCount  = countFn("open", true) + countFn("closed", true)
+            val branch     = getDefaultBranch(r).getOrElse("")
 
             FessRepositoryInfo(r.name,
                                r.owner,
+                               branch,
                                r.repository.isPrivate,
                                issueCount,
                                pullCount,
@@ -66,6 +71,13 @@ trait FessApiControllerBase extends ControllerBase {
       }
     JsonFormat(FessResponse(allRepos.size, repos.size, offset, repos))
   })
+
+  private def getDefaultBranch(r: RepositoryService.RepositoryInfo): Option[String] =
+    using(Git.open(getRepositoryDir(r.owner, r.name))){ git =>
+      JGitUtil.getDefaultBranch(git, r).map { case (_, branch) =>
+        branch
+      }
+    }
 
   get("/api/v3/fess/:owner/:repo/wiki")(adminOnly({
     val owner = params.get("owner").get
@@ -95,6 +107,7 @@ case class FessLabelResponse(source_label: List[String])
 
 case class FessRepositoryInfo(name: String,
                               owner: String,
+                              branch: String,
                               is_private: Boolean,
                               issue_count: Int,
                               pull_count: Int,
