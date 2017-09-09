@@ -1,7 +1,7 @@
 gitbucket-fess-plugin: Search All of GitBucket on Fess
 ==
 
-[**gitbucket-fess-plugin**](https://github.com/codelibs/gitbucket-fess-plugin) is a [**GitBucket**](https://github.com/gitbucket/gitbucket) plugin that provides **global search**, that is, search across multiple repositories.
+[**gitbucket-fess-plugin**](https://github.com/codelibs/gitbucket-fess-plugin) is a [**GitBucket**](https://gitbucket.github.io) plugin that provides **global search**, that is, search across multiple repositories.
 
 Users can search for:
 * **Code** in all public repositories
@@ -33,7 +33,7 @@ Links
 
 | Plugin version | GitBucket version | Fess version | jar File                                                                                                                                             |
 |:--------------:|:-----------------:|:---------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------:|
-| 1.1.x          | 4.13, 4.12, 4.11  | 11.0.1 or later | [Download](http://central.maven.org/maven2/org/codelibs/gitbucket/gitbucket-fess-plugin_2.12/1.1.1/gitbucket-fess-plugin_2.12-1.1.1.jar)             |
+| 1.1.x          | 4.11 or later     | 11.0.1 or later | [Download](http://central.maven.org/maven2/org/codelibs/gitbucket/gitbucket-fess-plugin_2.12/1.1.1/gitbucket-fess-plugin_2.12-1.1.1.jar)             |
 | 1.0.0          | 4.10              | 11.0.1          | [Download](http://central.maven.org/maven2/org/codelibs/gitbucket/gitbucket-fess-plugin_2.12/1.0.0/gitbucket-fess-plugin_2.12-1.0.0.jar)             |
 | 1.0.0-beta2    | 4.7               | 10.3            | [Download](http://central.maven.org/maven2/org/codelibs/gitbucket/gitbucket-fess-plugin_2.11/1.0.0-beta2/gitbucket-fess-plugin_2.11-1.0.0-beta2.jar) |
 | 1.0.0-beta1    | 4.6               | 10.3            | [Download](http://central.maven.org/maven2/org/codelibs/gitbucket/gitbucket-fess-plugin_2.11/1.0.0-beta1/gitbucket-fess-plugin_2.11-1.0.0-beta1.jar) |
@@ -61,7 +61,7 @@ The flow of the setting is like the following:
 * [Step 5. Register Fess's URL @GitBucket](#step-5-register-fesss-url-gitbucket)
 
 ### Step 1. Run GitBucket and Fess
-Run [GitBucket](https://github.com/gitbucket/gitbucket) and [Fess](https://github.com/codelibs/fess).
+Run [GitBucket](https://gitbucket.github.io) and [Fess](https://github.com/codelibs/fess).
 If you run the both applications on `localhost`, use different port numbers.
 
 #### Example
