@@ -72,10 +72,12 @@ trait FessApiControllerBase extends ControllerBase {
     JsonFormat(FessResponse(allRepos.size, repos.size, offset, repos))
   })
 
-  private def getDefaultBranch(r: RepositoryService.RepositoryInfo): Option[String] =
-    using(Git.open(getRepositoryDir(r.owner, r.name))){ git =>
-      JGitUtil.getDefaultBranch(git, r).map { case (_, branch) =>
-        branch
+  private def getDefaultBranch(
+      r: RepositoryService.RepositoryInfo): Option[String] =
+    using(Git.open(getRepositoryDir(r.owner, r.name))) { git =>
+      JGitUtil.getDefaultBranch(git, r).map {
+        case (_, branch) =>
+          branch
       }
     }
 
