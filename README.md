@@ -33,7 +33,7 @@ Links
 
 | Plugin version | GitBucket version | Fess version | jar File                                                                                                                                             |
 |:--------------:|:-----------------:|:---------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------:|
-| 1.2.x          | 4.15 or later     | 11.0.1 or later | Coming soon! |
+| 1.2.x          | 4.15 or later     | 11.0.1 or later | [Download](http://central.maven.org/maven2/org/codelibs/gitbucket/gitbucket-fess-plugin_2.12/1.2.0/gitbucket-fess-plugin_2.12-1.2.0.jar) |
 | 1.1.x          | 4.{11, 12, 13, 14}| 11.0.1 or later | [Download](http://central.maven.org/maven2/org/codelibs/gitbucket/gitbucket-fess-plugin_2.12/1.1.1/gitbucket-fess-plugin_2.12-1.1.1.jar)             |
 | 1.0.0          | 4.10              | 11.0.1          | [Download](http://central.maven.org/maven2/org/codelibs/gitbucket/gitbucket-fess-plugin_2.12/1.0.0/gitbucket-fess-plugin_2.12-1.0.0.jar)             |
 | 1.0.0-beta2    | 4.7               | 10.3            | [Download](http://central.maven.org/maven2/org/codelibs/gitbucket/gitbucket-fess-plugin_2.11/1.0.0-beta2/gitbucket-fess-plugin_2.11-1.0.0-beta2.jar) |
