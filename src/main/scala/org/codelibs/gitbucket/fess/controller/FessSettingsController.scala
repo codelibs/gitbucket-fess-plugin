@@ -2,8 +2,8 @@ package org.codelibs.gitbucket.fess.controller
 
 import gitbucket.core.controller.ControllerBase
 import gitbucket.core.util.AdminAuthenticator
+import org.scalatra.forms._
 import org.codelibs.gitbucket.fess.html
-import io.github.gitbucket.scalatra.forms._
 import org.codelibs.gitbucket.fess.service.FessSettingsService
 import org.codelibs.gitbucket.fess.service.FessSettingsService._
 

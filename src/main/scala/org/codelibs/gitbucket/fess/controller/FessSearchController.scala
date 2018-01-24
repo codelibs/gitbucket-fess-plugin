@@ -7,9 +7,6 @@ import org.codelibs.gitbucket.fess.html
 import gitbucket.core.util._
 import gitbucket.core.util.Implicits._
 
-import scala.reflect.ClassTag
-import scala.reflect.runtime.universe._
-
 class FessSearchController
     extends FessSearchControllerBase
     with FessSearchService
