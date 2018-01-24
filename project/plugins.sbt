@@ -1,2 +1,2 @@
-addSbtPlugin("com.typesafe.sbt" % "sbt-twirl" % "1.3.0")
-addSbtPlugin("com.geirsson" % "sbt-scalafmt" % "0.5.6")
+addSbtPlugin("io.github.gitbucket" % "sbt-gitbucket-plugin" % "1.2.0")
+addSbtPlugin("com.geirsson" % "sbt-scalafmt" % "1.4.0")
