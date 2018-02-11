@@ -3,6 +3,7 @@ package org.codelibs.gitbucket.fess.service
 import java.net.{URL, URLEncoder}
 import java.util.Date
 
+import gitbucket.core.controller.ControllerBase
 import gitbucket.core.model.{Issue, Session}
 import gitbucket.core.service.{AccountService, IssuesService, WikiService}
 import gitbucket.core.util.Directory._
@@ -18,7 +19,10 @@ import org.slf4j.LoggerFactory
 import scala.io.Source._
 
 trait FessSearchService {
-  self: IssuesService with WikiService with AccountService =>
+  self: IssuesService
+    with WikiService
+    with AccountService
+    with ControllerBase =>
   import gitbucket.core.service.RepositorySearchService._
 
   val logger = LoggerFactory.getLogger(getClass)
@@ -129,8 +133,9 @@ trait FessSearchService {
     using(Git.open(getRepositoryDir(owner, repo))) { git =>
       val revCommit =
         JGitUtil.getRevCommitFromId(git, git.getRepository.resolve(revStr))
-      getContentFromPath(git, revCommit.getTree, path, fetchLargeFile = false)
-        .map(x => new String(x))
+      getPathObjectId(git, path, revCommit).flatMap({ objectId =>
+        JGitUtil.getContentInfo(git, path, objectId).content
+      })
     }
 
   def getCodeContents(query: String,
