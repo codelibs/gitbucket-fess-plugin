@@ -59,24 +59,14 @@ trait FessSearchControllerBase extends ControllerBase {
         case "issues" =>
           searchIssueOnFess(userName, query, settings, offset, Display_num) match {
             case Right((r, issues)) =>
-              html.issues(r.query,
-                          r.offset,
-                          r.hit_count,
-                          issues,
-                          page,
-                          isAdmin)
+              html.issues(r.query, r.offset, r.hit_count, issues, page, isAdmin)
             case Left(message) =>
               html.error(target, query, message, isAdmin, setup = true)
           }
         case "wiki" =>
           searchWikiOnFess(userName, query, settings, offset, Display_num) match {
             case Right((r, contents)) =>
-              html.wiki(r.query,
-                        r.offset,
-                        r.hit_count,
-                        contents,
-                        page,
-                        isAdmin)
+              html.wiki(r.query, r.offset, r.hit_count, contents, page, isAdmin)
             case Left(message) =>
               html.error(target, query, message, isAdmin, setup = true)
           }

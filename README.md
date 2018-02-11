@@ -170,12 +170,12 @@ Then, you can setting up the value of `Schedule` in [Cron-format](https://en.wik
 You need to [install sbt](http://www.scala-sbt.org/index.html) to build this plugin from source code.
 
 ```bash
-$ ./sbt package
+$ sbt package
 ```
 
 ## Code Format
 ```bash
-$ ./sbt scalafmt
+$ sbt scalafmt
 ```
 
 # Contribution

@@ -163,10 +163,8 @@ trait FessSearchService {
       issueId: String,
       query: String)(implicit session: Session): Option[(Issue, Int, String)] =
     getIssue(owner, repo, issueId).map(issue => {
-      val comments = issue.content.getOrElse("") :: getComments(
-          owner,
-          repo,
-          issueId.toInt).map(_.content)
+      val comments = issue.content
+        .getOrElse("") :: getComments(owner, repo, issueId.toInt).map(_.content)
       val matched = comments.find(_.contains(query)).getOrElse(comments.head)
       (issue, comments.length, matched)
     })
