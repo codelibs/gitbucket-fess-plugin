@@ -15,7 +15,9 @@ class Plugin extends gitbucket.core.plugin.Plugin {
     List(new Version("1.0.0"),
          new Version("1.1.0"),
          new Version("1.1.1"),
-         new Version("1.2.0"))
+         new Version("1.2.0"),
+         new Version("1.3.0"),
+         new Version("1.3.1"))
   override val controllers = Seq(
     // Note: "/api/v3/" is a special prefix in ControllerBase.scala and Implicits.scala
     "/*" -> new FessApiController(),
