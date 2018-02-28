@@ -122,6 +122,7 @@ If a crawler starts successfully, the status of the job scheduler becomes *Runni
 ![Crawler is running](images/step4-2.png)
 
 Crawling process takes time, depending on a number of contents in GitBucket.
+Fess stores codes on the default branch in each repository.
 After the crawling job finishes, you can search GitBucket's contents on Fess.
 
 ### Step 5. Register Fess's URL @GitBucket
