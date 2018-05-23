@@ -2,11 +2,11 @@ name := "gitbucket-fess-plugin"
 
 organization := "org.codelibs.gitbucket"
 
-version := "1.3.1-SNAPSHOT"
+version := "1.4.0-SNAPSHOT"
 
-scalaVersion := "2.12.4"
+scalaVersion := "2.12.6"
 
-gitbucketVersion := "4.20.0"
+gitbucketVersion := "4.24.1"
 
 publishMavenStyle := true
 

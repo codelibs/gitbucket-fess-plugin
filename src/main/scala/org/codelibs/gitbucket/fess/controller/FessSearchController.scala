@@ -11,6 +11,9 @@ class FessSearchController
     extends FessSearchControllerBase
     with FessSearchService
     with ActivityService
+    with LabelsService
+    with PrioritiesService
+    with MilestonesService
     with IssuesService
     with WikiService
     with RepositoryService
@@ -26,6 +29,9 @@ class FessSearchController
 trait FessSearchControllerBase extends ControllerBase {
   self: FessSearchService
     with ActivityService
+    with LabelsService
+    with PrioritiesService
+    with MilestonesService
     with IssuesService
     with WikiService
     with RepositoryService

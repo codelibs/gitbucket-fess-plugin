@@ -6,6 +6,7 @@ import gitbucket.core.util._
 import gitbucket.core.util.Directory._
 import gitbucket.core.util.SyntaxSugars._
 import gitbucket.core.controller.ControllerBase
+import gitbucket.core.service.IssuesService
 import gitbucket.core.service.IssuesService.IssueSearchCondition
 import gitbucket.core.util.Implicits._
 import org.codelibs.gitbucket.fess.service.FessSearchService
@@ -18,6 +19,9 @@ class FessApiController
     with AdminAuthenticator
     with UsersAuthenticator
     with WikiService
+    with LabelsService
+    with PrioritiesService
+    with MilestonesService
     with IssuesService
     with FessSearchService
 
@@ -27,6 +31,9 @@ trait FessApiControllerBase extends ControllerBase {
     with AdminAuthenticator
     with UsersAuthenticator
     with WikiService
+    with LabelsService
+    with PrioritiesService
+    with MilestonesService
     with IssuesService
     with FessSearchService =>
 
@@ -92,11 +99,27 @@ trait FessApiControllerBase extends ControllerBase {
     val owner = params.get("owner").get
     val repo  = params.get("repo").get
     contentType = "application/vnd.github.v3.raw"
+
     params
       .get("path")
-      .flatMap(path =>
-        getFileContent(owner, repo, java.net.URLDecoder.decode(path, "UTF-8")))
-      .getOrElse(Array.empty)
+      .flatMap({
+        path =>
+          using(Git.open(getWikiRepositoryDir(owner, repo))) {
+            git =>
+              getRepository(owner, repo).flatMap({ repository =>
+                val revCommit =
+                  JGitUtil.getRevCommitFromId(
+                    git,
+                    git.getRepository.resolve("master"))
+                getPathObjectId(git, path, revCommit).map { objectId =>
+                  responseRawFile(git,
+                                  objectId,
+                                  java.net.URLEncoder.encode(path, "UTF-8"),
+                                  repository)
+                }
+              })
+          }
+      }) getOrElse NotFound()
   }))
 }
 
