@@ -182,3 +182,8 @@ $ sbt scalafmt
 # Contribution
 Any contribution will be appreciated!
 Please send [issues](https://github.com/codelibs/gitbucket-fess-plugin/issues) or [pull requests](https://github.com/codelibs/gitbucket-fess-plugin/pulls).
+
+# For Maintainers
+If you want to increment the version number, please update values in:
+* `build.sbt`
+* `src/main/scala/Plugin.scala`
