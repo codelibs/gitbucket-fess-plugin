@@ -2,7 +2,7 @@ name := "gitbucket-fess-plugin"
 
 organization := "org.codelibs.gitbucket"
 
-version := "1.4.0"
+version := "1.4.1-SNAPSHOT"
 
 scalaVersion := "2.12.6"
 
