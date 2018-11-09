@@ -1,5 +1,6 @@
 package org.codelibs.gitbucket.fess.service
 
+import scala.util.control.Exception._
 import java.net.{URL, URLEncoder}
 import java.util.Date
 
@@ -7,13 +8,11 @@ import gitbucket.core.controller.ControllerBase
 import gitbucket.core.model.{Issue, Session}
 import gitbucket.core.service.{AccountService, IssuesService, WikiService}
 import gitbucket.core.util.Directory._
-import gitbucket.core.util.JGitUtil._
 import gitbucket.core.util.SyntaxSugars._
 import gitbucket.core.util._
 import org.codelibs.gitbucket.fess.service.FessSettingsService.FessSettings
 import org.eclipse.jgit.api.Git
 import org.json4s._
-import org.json4s.jackson.JsonMethods._
 import org.slf4j.LoggerFactory
 
 import scala.io.Source._
@@ -141,18 +140,22 @@ trait FessSearchService {
   def getCodeContents(query: String,
                       results: List[FessRawResult]): List[FessCodeInfo] =
     results.flatMap(result => {
-      getRepositoryDataFromURL(result.url).map({
+      getRepositoryDataFromURL(result.url).flatMap({
         case (owner, repo, branch, path) =>
-          val content =
-            getFileContent(owner, repo, branch, path).getOrElse("")
-          val (highlightText, highlightLineNumber) =
-            getHighlightText(content, query)
-          FessCodeInfo(owner,
-                       repo,
-                       result.url,
-                       result.title,
-                       highlightText,
-                       highlightLineNumber)
+          // getFileContent causes an exception if the repository is deleted.
+          val contentOpt = allCatch opt {
+            getFileContent(owner, repo, branch, path).get
+          }
+          contentOpt.map(content => {
+            val (highlightText, highlightLineNumber) =
+              getHighlightText(content, query)
+            FessCodeInfo(owner,
+                         repo,
+                         result.url,
+                         result.title,
+                         highlightText,
+                         highlightLineNumber)
+          })
       })
     })
 
@@ -195,7 +198,9 @@ trait FessSearchService {
     results.flatMap(result => {
       getWikiDataFromURL(result.url).flatMap({
         case (owner, repo, filename) =>
-          getWikiPage(owner, repo, filename).map(wikiInfo => {
+          // getWikiPage causes an exception if the repository is deleted.
+          val wikiOpt = allCatch opt { getWikiPage(owner, repo, filename).get }
+          wikiOpt.map(wikiInfo => {
             val (content, lineNum) = getHighlightText(wikiInfo.content, query)
             FessWikiInfo(owner, repo, result.url, filename, content, lineNum)
           })
