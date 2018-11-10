@@ -33,15 +33,15 @@ Links
 
 See [Maven Repository](http://central.maven.org/maven2/org/codelibs/gitbucket/gitbucket-fess-plugin_2.12/).
 
-| Plugin version | GitBucket version | Fess version |
-|:--------------:|:-----------------:|:------------:|
-| 1.4.x          | 4.24.1 -          | 11.0.1 -     |
-| 1.3.x          | 4.20 -            | 11.0.1 -     |
-| 1.2.x          | 4.15 -            | 11.0.1 -     |
-| 1.1.x          | 4.{11, 12, 13, 14}| 11.0.1 -     |
-| 1.0.0          | 4.10              | 11.0.1       |
-| 1.0.0-beta2    | 4.7               | 10.3         |
-| 1.0.0-beta1    | 4.6               | 10.3         |
+| Plugin version | GitBucket version | Fess version  |
+|:--------------:|:-----------------:|:-------------:|
+| 1.4.x          | 4.24.1 -          | 11.0.1 -, 12.x|
+| 1.3.x          | 4.20 -            | 11.0.1 -, 12.x|
+| 1.2.x          | 4.15 -            | 11.0.1 -, 12.x|
+| 1.1.x          | 4.{11, 12, 13, 14}| 11.0.1 -, 12.x|
+| 1.0.0          | 4.10              | 11.0.1        |
+| 1.0.0-beta2    | 4.7               | 10.3          |
+| 1.0.0-beta1    | 4.6               | 10.3          |
 
 # Getting Started
 
