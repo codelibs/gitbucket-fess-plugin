@@ -128,7 +128,8 @@ After the crawling job finishes, you can search GitBucket's contents on Fess.
 
 ### Step 5. Register Fess's URL @GitBucket
 This is the final step.
-Access to `http://[GitBucket URL]/fess/settings` as an admin user and register the Fess URL.
+Access to `http://[GitBucket URL]/fess/settings` as an admin user and register the URL of **Fess's top page**.
+Note that the following image uses the URL of Fess started with flags `-Dfess.port=8081 -Dfess.context.path=/fess/`.
 
 You can also register a [Fess's access token](http://fess.codelibs.org/11.0/admin/accesstoken-guide.html) here.
 It is required for private repository search, but you can leave this form empty now.
