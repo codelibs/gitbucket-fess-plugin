@@ -1,6 +1,7 @@
 package org.codelibs.gitbucket.fess.service
 
 import scala.util.control.Exception._
+import scala.util.Using
 import java.net.{URL, URLEncoder}
 import java.util.Date
 
@@ -129,7 +130,7 @@ trait FessSearchService {
                      repo: String,
                      revStr: String,
                      path: String): Option[String] =
-    using(Git.open(getRepositoryDir(owner, repo))) { git =>
+    Using.resource(Git.open(getRepositoryDir(owner, repo))) { git =>
       val revCommit =
         JGitUtil.getRevCommitFromId(git, git.getRepository.resolve(revStr))
       getPathObjectId(git, path, revCommit).flatMap({ objectId =>
@@ -215,7 +216,7 @@ trait FessSearchService {
                        num: Int)(implicit session: Session)
     : Either[String, (FessSearchInfo, List[FessCodeInfo])] =
     try {
-      execSearch(user, query, setting, offset, num, SourceLabel).right.map({
+      execSearch(user, query, setting, offset, num, SourceLabel).map({
         case (info, res) => (info, getCodeContents(query, res))
       })
     } catch {
@@ -231,7 +232,7 @@ trait FessSearchService {
                         num: Int)(implicit session: Session)
     : Either[String, (FessSearchInfo, List[FessIssueInfo])] =
     try {
-      execSearch(user, query, setting, offset, num, IssueLabel).right.map({
+      execSearch(user, query, setting, offset, num, IssueLabel).map({
         case (info, res) => (info, getIssueContents(query, res))
       })
     } catch {
@@ -247,7 +248,7 @@ trait FessSearchService {
                        num: Int)(implicit session: Session)
     : Either[String, (FessSearchInfo, List[FessWikiInfo])] =
     try {
-      execSearch(user, query, setting, offset, num, WikiLabel).right.map({
+      execSearch(user, query, setting, offset, num, WikiLabel).map({
         case (info, res) => (info, getWikiContents(query, res))
       })
     } catch {

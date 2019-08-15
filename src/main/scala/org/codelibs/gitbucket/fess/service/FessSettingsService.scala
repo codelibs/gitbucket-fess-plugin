@@ -1,5 +1,6 @@
 package org.codelibs.gitbucket.fess.service
 
+import scala.util.Using
 import java.io.File
 
 import gitbucket.core.util.Directory._
@@ -14,7 +15,7 @@ trait FessSettingsService {
     defining(new java.util.Properties()) { props =>
       props.setProperty(FessURL, settings.fessUrl)
       settings.fessToken.foreach(x => props.setProperty(FessToken, x))
-      using(new java.io.FileOutputStream(FessConf)) { out =>
+      Using.resource(new java.io.FileOutputStream(FessConf)) { out =>
         props.store(out, null)
       }
     }
@@ -22,7 +23,7 @@ trait FessSettingsService {
   def loadFessSettings(): FessSettings =
     defining(new java.util.Properties()) { props =>
       if (FessConf.exists) {
-        using(new java.io.FileInputStream(FessConf)) { in =>
+        Using.resource(new java.io.FileInputStream(FessConf)) { in =>
           props.load(in)
         }
       }

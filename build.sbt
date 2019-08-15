@@ -4,9 +4,9 @@ organization := "org.codelibs.gitbucket"
 
 version := "1.4.2-SNAPSHOT"
 
-scalaVersion := "2.12.6"
+scalaVersion := "2.13.0"
 
-gitbucketVersion := "4.24.1"
+gitbucketVersion := "4.32.0"
 
 publishMavenStyle := true
 

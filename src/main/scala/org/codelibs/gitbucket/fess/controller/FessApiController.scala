@@ -1,5 +1,7 @@
 package org.codelibs.gitbucket.fess.controller
 
+import scala.util.Using
+
 import gitbucket.core.api._
 import gitbucket.core.service._
 import gitbucket.core.util._
@@ -81,7 +83,7 @@ trait FessApiControllerBase extends ControllerBase {
 
   private def getDefaultBranch(
       r: RepositoryService.RepositoryInfo): Option[String] =
-    using(Git.open(getRepositoryDir(r.owner, r.name))) { git =>
+    Using.resource(Git.open(getRepositoryDir(r.owner, r.name))) { git =>
       JGitUtil.getDefaultBranch(git, r).map {
         case (_, branch) =>
           branch
@@ -104,7 +106,7 @@ trait FessApiControllerBase extends ControllerBase {
       .get("path")
       .flatMap({
         path =>
-          using(Git.open(getWikiRepositoryDir(owner, repo))) {
+          Using.resource(Git.open(getWikiRepositoryDir(owner, repo))) {
             git =>
               getRepository(owner, repo).flatMap({ repository =>
                 val revCommit =
