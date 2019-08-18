@@ -1,3 +1,5 @@
 addSbtPlugin("io.github.gitbucket" % "sbt-gitbucket-plugin" % "1.5.0")
 addSbtPlugin("com.geirsson" % "sbt-scalafmt" % "1.4.0")
 addSbtPlugin("io.get-coursier" % "sbt-coursier" % "1.0.1")
+addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "2.5")
+addSbtPlugin("com.jsuereth" % "sbt-pgp" % "1.1.0")
