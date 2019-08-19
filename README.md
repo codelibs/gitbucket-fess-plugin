@@ -31,7 +31,7 @@ Links
 
 # Release
 
-See [Maven Repository](http://central.maven.org/maven2/org/codelibs/gitbucket/gitbucket-fess-plugin_2.12/).
+See [Maven Repository](http://central.maven.org/maven2/org/codelibs/gitbucket/gitbucket-fess-plugin_2.13/).
 
 | Plugin version | GitBucket version | Fess version  |
 |:--------------:|:-----------------:|:-------------:|
