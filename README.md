@@ -35,6 +35,7 @@ See [Maven Repository](http://central.maven.org/maven2/org/codelibs/gitbucket/gi
 
 | Plugin version | GitBucket version | Fess version  |
 |:--------------:|:-----------------:|:-------------:|
+| 1.5.x          | 4.32 -            | 11.0.1 -, 12.x|
 | 1.4.x          | 4.24.1 -          | 11.0.1 -, 12.x|
 | 1.3.x          | 4.20 -            | 11.0.1 -, 12.x|
 | 1.2.x          | 4.15 -            | 11.0.1 -, 12.x|
