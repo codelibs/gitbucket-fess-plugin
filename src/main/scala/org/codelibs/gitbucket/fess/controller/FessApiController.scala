@@ -61,12 +61,12 @@ trait FessApiControllerBase extends ControllerBase {
           {
             // Note: 'r.issueCount' and 'r.pullCount' are always 0 (See the implementation of 'getVisibleRepositories')
             // Thus we should compute them here.
-            val countFn = (state: String, isPull: Boolean) =>
+            val countFn = (state: String, isPull: IssueSearchOption) =>
               countIssue(IssueSearchCondition(state = state),
                          isPull,
                          (r.owner, r.name))
-            val issueCount = countFn("open", false) + countFn("closed", false)
-            val pullCount  = countFn("open", true) + countFn("closed", true)
+            val issueCount = countFn("open", IssueSearchOption.Issues) + countFn("closed", IssueSearchOption.Issues)
+            val pullCount  = countFn("open", IssueSearchOption.PullRequests) + countFn("closed", IssueSearchOption.PullRequests)
             val branch     = getDefaultBranch(r).getOrElse("")
 
             FessRepositoryInfo(r.name,
