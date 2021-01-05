@@ -10,7 +10,6 @@ import gitbucket.core.util.Implicits._
 class FessSearchController
     extends FessSearchControllerBase
     with FessSearchService
-    with ActivityService
     with LabelsService
     with PrioritiesService
     with MilestonesService
@@ -28,7 +27,6 @@ class FessSearchController
 
 trait FessSearchControllerBase extends ControllerBase {
   self: FessSearchService
-    with ActivityService
     with LabelsService
     with PrioritiesService
     with MilestonesService
