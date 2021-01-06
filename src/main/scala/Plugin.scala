@@ -21,6 +21,7 @@ class Plugin extends gitbucket.core.plugin.Plugin {
          new Version("1.4.1"),
          new Version("1.5.0"),
          new Version("1.6.0"),
+         new Version("1.7.0"),
     )
   override val controllers = Seq(
     // Note: "/api/v3/" is a special prefix in ControllerBase.scala and Implicits.scala
