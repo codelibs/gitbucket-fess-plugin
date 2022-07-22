@@ -134,7 +134,7 @@ trait FessSearchService {
       val revCommit =
         JGitUtil.getRevCommitFromId(git, git.getRepository.resolve(revStr))
       getPathObjectId(git, path, revCommit).flatMap({ objectId =>
-        JGitUtil.getContentInfo(git, path, objectId).content
+        JGitUtil.getContentInfo(git, path, objectId, false).content
       })
     }
 
